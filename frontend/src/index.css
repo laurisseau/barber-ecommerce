@@ -27,7 +27,7 @@ code {
   width: auto;
 }
 
-.header-btn{
+.header-btn {
   text-decoration: none;
   color: white;
   border: 3px solid white;
@@ -37,8 +37,52 @@ code {
   border-radius: 5px;
 }
 
-.header-btn:hover{
+.header-btn:hover {
   color: white;
   border: 3px solid rgb(53, 131, 209);
-  transition: .5s;
+  transition: 0.5s;
 }
+
+.body-btn {
+  text-decoration: none;
+  background-color: rgb(53, 131, 209);
+  color: white;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: 400;
+  border-radius: 5px;
+  border: none;
+}
+
+.body-btn:hover {
+  color: white;
+  background-color: rgb(45, 109, 174);
+  transition: 0.5s;
+}
+
+.responsive {
+  width: 100%;
+  height: auto;
+}
+
+.our-products{
+  height: "400px";
+  width: "300px";
+  border-radius: "50px";
+
+}
+
+.our-products:hover{
+  background-color: black;
+
+}
+
+@media only screen and (max-width: 940px) {
+  .first-body-text {
+    text-align: center;
+  }
+  .body-btn {
+    width: 100%;
+  }
+}
+
