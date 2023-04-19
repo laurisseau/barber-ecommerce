@@ -1,8 +1,13 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
+import FlowersScreen from "./screens/FlowersScreen";
 import NavBarComp from "./components/NavbarComp";
 import Container from "react-bootstrap/Container";
+import ProductScreen from "./screens/ProductScreen"
+import CartScreen from "./screens/CartScreen";
+import SigninScreen from "./screens/SigninScreen";
+import SignupScreen from "./screens/SignupScreen";
 
 function App() {
   return (
@@ -12,6 +17,11 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
+          <Route path="/flowers" element={<FlowersScreen />} />
+          <Route path="/product/:slug" element={<ProductScreen />} />
+          <Route path='/cart' element={<CartScreen/>}/>
+          <Route path='/signin' element={<SigninScreen/>}/>
+          <Route path='/signup' element={<SignupScreen/>}/>
         </Routes>
       </main>
 

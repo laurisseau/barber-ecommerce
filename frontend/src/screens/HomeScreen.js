@@ -18,7 +18,7 @@ export default function HomeScreen() {
       slidesToSlide: 1, // optional, default to 1.
     },
     mobile: {
-      breakpoint: { max: 464, min: 0 },
+      breakpoint: { max: 960, min: 0 },
       items: 1,
       slidesToSlide: 1, // optional, default to 1.
     },
@@ -78,7 +78,7 @@ export default function HomeScreen() {
         </div>
 
         <div className="text-center mb-5 " style={{ height: "500px" }}>
-          <h1 className="mb-5">Our Products</h1>
+          <h1 className="mb-5">Our Categories</h1>
 
           <Carousel
             swipeable={true}
@@ -86,35 +86,35 @@ export default function HomeScreen() {
             infinite={true}
             partialVisible={true}
           >
-            <Link to="/">
+            <a href="/flowers">
               <img
-                alt="product"
-                src="https://images.unsplash.com/photo-1610705267928-1b9f2fa7f1c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                alt="category"
+                src="https://images.unsplash.com/photo-1589140915708-20ff586fe767?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
                 className=""
                 style={ourProducts}
               ></img>
-            </Link>
-            <Link to="/">
+            </a>
+            <Link to="/pre-rolls">
               <img
-                alt="product"
-                src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1053&q=80"
+                alt="category"
+                src="https://images.unsplash.com/photo-1649127472726-5396b1e85a31?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
                 className=""
                 style={ourProducts}
               ></img>
             </Link>
 
-            <Link to="/">
+            <Link to="/vaporizers">
               <img
-                alt="product"
-                src="https://images.unsplash.com/photo-1556228852-80b6e5eeff06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
+                alt="category"
+                src="https://images.unsplash.com/photo-1605117913123-1f455435b384?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
                 className=""
                 style={ourProducts}
               ></img>
             </Link>
-            <Link to="/">
+            <Link to="/concentrates">
               <img
-                alt="product"
-                src="https://images.unsplash.com/photo-1526947425960-945c6e72858f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                alt="category"
+                src="https://images.unsplash.com/photo-1598052162874-e41952203254?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=888&q=80"
                 className=""
                 style={ourProducts}
               ></img>
