@@ -50,8 +50,6 @@ export default function ProductScreen(props) {
 
   const { product } = props;
 
-  console.log(product.name);
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },

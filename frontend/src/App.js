@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {QueryClientProvider, QueryClient} from 'react-query'
 import HomeScreen from "./screens/HomeScreen";
 import FlowersScreen from "./screens/FlowersScreen";
 import NavBarComp from "./components/NavbarComp";
@@ -9,8 +10,12 @@ import CartScreen from "./screens/CartScreen";
 import SigninScreen from "./screens/SigninScreen";
 import SignupScreen from "./screens/SignupScreen";
 
+
+const queryClient = new QueryClient()
+
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <NavBarComp />
 
@@ -54,6 +59,7 @@ function App() {
         </Container>
       </footer>
     </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

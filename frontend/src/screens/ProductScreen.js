@@ -12,6 +12,8 @@ export default function ProductScreen() {
   const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
+
+  console.log(slug)
   /*
     const [{ loading, error, product }, dispatch] = useReducer(reducer, {
       loading: true,
