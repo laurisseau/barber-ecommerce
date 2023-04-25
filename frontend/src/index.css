@@ -92,6 +92,17 @@ code {
 .product-box {
   width: 300px;
 }
+
+.category-box{
+  height: 400px;
+  width: 300px;
+  border-radius: 5px;
+}
+
+.category-box:hover {
+  border: 1px solid red;
+}
+
 .custom-card {
   border: 2px solid #e9eaea;
   border-radius: 5px;

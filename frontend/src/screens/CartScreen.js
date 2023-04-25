@@ -9,6 +9,7 @@ import MessageBox from '../components/MessageBox';
 import Card from 'react-bootstrap/Card';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container';
+import axios from 'axios';
 
 export default function CartScreen() {
   const navigate = useNavigate();
@@ -17,11 +18,11 @@ export default function CartScreen() {
     cart: { cartItems },
   } = state;
 
-  /*
   const updateCartHandler = async (item, quantity) => {
-    const { data } = await axios.get(`/api/products/${item._id}`);
+    const prodId = await axios.get(`/api/products/${item._id}`);
+    let prodIdData = prodId.data;
 
-    if (data.countInStock < quantity) {
+    if (prodIdData.countInStock < quantity) {
       window.alert('Sorry. product out of stock');
       return;
     }
@@ -30,7 +31,7 @@ export default function CartScreen() {
       payload: { ...item, quantity },
     });
   };
-*/
+
   const removeItemHandler = async (item) => {
     ctxDispatch({
       type: 'CART_REMOVE_ITEM',
@@ -39,7 +40,8 @@ export default function CartScreen() {
   };
 
   const checkoutHandler = () => {
-    navigate('/signin?redirect=/shipping');
+    //navigate('/signin?redirect=/shipping');
+    navigate('redirect=/shipping');
   };
 
   return (
@@ -47,8 +49,8 @@ export default function CartScreen() {
       <Helmet>
         <title>Shopping Cart</title>
       </Helmet>
-      <h1 className='mt-5'>Shopping Cart</h1>
-      <Row className='mb-5 mt-4'>
+      <h1 className="mt-5">Shopping Cart</h1>
+      <Row className="mb-5 mt-4">
         <Col md={8}>
           {cartItems.length === 0 ? (
             <MessageBox>
@@ -68,13 +70,22 @@ export default function CartScreen() {
                       <Link to={`product/${item.slug}`}>{item.name}</Link>
                     </Col>
                     <Col md={3}>
-                      <Button variant="light" disabled={item.quantity === 1}>
+                      <Button
+                        variant="light"
+                        disabled={item.quantity === 1}
+                        onClick={() =>
+                          updateCartHandler(item, item.quantity - 1)
+                        }
+                      >
                         <i className="fas fa-minus-circle"></i>
                       </Button>{' '}
                       <span>{item.quantity}</span>{' '}
                       <Button
                         variant="light"
                         disabled={item.quantity === item.countInStock}
+                        onClick={() =>
+                          updateCartHandler(item, item.quantity + 1)
+                        }
                       >
                         <i className="fas fa-plus-circle"></i>
                       </Button>{' '}
