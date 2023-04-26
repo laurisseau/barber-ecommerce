@@ -1,4 +1,4 @@
-/*
+
 import { useState } from "react";
 import axios from "axios";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
@@ -38,7 +38,7 @@ export default function PaymentForm() {
       const { data } = await axios.put(
         `/api/appointment/updatePaidAppointment/${id}`
       );
-      
+      */
 
       //if (data) {
         window.location.href = "/"
@@ -64,4 +64,3 @@ export default function PaymentForm() {
   );
 }
 
-*/

@@ -41,7 +41,7 @@ export default function CartScreen() {
 
   const checkoutHandler = () => {
     //navigate('/signin?redirect=/shipping');
-    navigate('redirect=/shipping');
+    navigate('/shipping');
   };
 
   return (
@@ -57,47 +57,54 @@ export default function CartScreen() {
               Cart is empty. <Link to="/">Go Shopping</Link>
             </MessageBox>
           ) : (
-            <ListGroup>
+            <ListGroup className='mb-5'>
               {cartItems.map((item) => (
-                <ListGroup.Item key={item._id}>
-                  <Row className="align-items-center">
-                    <Col md={4}>
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="img-fluid rounded img-thumbnail"
-                      ></img>{' '}
+                <ListGroup.Item key={item._id} className='d-flex '>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="img-fluid rounded me-3 "
+                    style={{ height: '100px' }}
+                  ></img>{' '}
+                  <Row className="align-items-center w-100">
+                    <Col
+                      md={4}
+                      
+                      xs={9}
+                      className="d-flex align-items-center "
+                    >
                       <Link to={`product/${item.slug}`}>{item.name}</Link>
                     </Col>
-                    <Col md={3}>
-                      <Button
-                        variant="light"
+                    <Col md={2}  xs={3}>${item.price}</Col>
+                    <Col md={4}  xs={9}className='d-flex align-items-center'>
+                      <button
+                      className='add-and-min-btn'
                         disabled={item.quantity === 1}
                         onClick={() =>
                           updateCartHandler(item, item.quantity - 1)
                         }
                       >
-                        <i className="fas fa-minus-circle"></i>
-                      </Button>{' '}
+                        <i className="fas fa-minus-circle" ></i>
+                      </button>{' '}
                       <span>{item.quantity}</span>{' '}
-                      <Button
-                        variant="light"
+                      <button
+                        className='add-and-min-btn'
                         disabled={item.quantity === item.countInStock}
                         onClick={() =>
                           updateCartHandler(item, item.quantity + 1)
                         }
                       >
-                        <i className="fas fa-plus-circle"></i>
-                      </Button>{' '}
+                        <i className="fas fa-plus-circle" ></i>
+                      </button>{' '}
                     </Col>
-                    <Col md={3}>${item.price}</Col>
-                    <Col md={2}>
-                      <Button
-                        variant="light"
+                    
+                    <Col md={2}  xs={3}>
+                      <button
+                        className='add-and-min-btn'
                         onClick={() => removeItemHandler(item)}
                       >
                         <i className="fas fa-trash"></i>
-                      </Button>
+                      </button>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -105,7 +112,7 @@ export default function CartScreen() {
             </ListGroup>
           )}
         </Col>
-        <Col md={4}>
+        <Col md={4} >
           <Card className="p-3">
             <div className="mb-3">
               <h3>

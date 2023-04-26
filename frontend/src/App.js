@@ -27,8 +27,8 @@ function App() {
           <Route path="/:slug" element={<ProductsScreen />} />
           <Route path="/product/:slug" element={<ProductScreen />} />
           <Route path="/shipping" element={<ShippingAddressScreen />} />
-          <Route path="/payment" elements={<PaymentScreen/>} />
           <Route path='/cart' element={<CartScreen/>}/>
+          <Route path='/payment' element={<PaymentScreen />} />
           <Route path='/signin' element={<SigninScreen/>}/>
           <Route path='/signup' element={<SignupScreen/>}/>
         </Routes>

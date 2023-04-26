@@ -113,9 +113,23 @@ code {
   height: 100%;
 }
 
+.img-large{
+  max-width: 100%;
+}
+
 .small-container{
   max-width: 600px;
 }
+
+.none{
+  display: none;
+}
+
+.add-and-min-btn{
+  border: none;
+  background-color: #ffff;
+}
+
 
 @media only screen and (max-width: 940px) {
   .first-body-text {
