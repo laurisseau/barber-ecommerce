@@ -7,7 +7,7 @@ import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
 
 export default function HomeScreen() {
-  const { isLoading, data } = useQuery('categories', async() => {
+  const { isLoading, data } = useQuery('categories', async () => {
     return await axios.get('/api/categories/');
   });
 
@@ -106,8 +106,11 @@ export default function HomeScreen() {
                     <img
                       alt="category"
                       src={category.image}
-                      className="category-box"
+                      className="category-box "
                     ></img>
+                    <div class="overlay">
+                      <h2 class="projectedText">{category.slug}</h2>
+                    </div>
                   </a>
                 </div>
               ))

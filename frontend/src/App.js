@@ -11,6 +11,7 @@ import SigninScreen from "./screens/SigninScreen";
 import SignupScreen from "./screens/SignupScreen";
 import ShippingAddressScreen from "./screens/shippingAddressScreen"
 import PaymentScreen from "./screens/PaymentScreen";
+import OrderHistoryScreen from "./screens/OrderHistoryScreen";
 
 
 const queryClient = new QueryClient()
@@ -29,6 +30,7 @@ function App() {
           <Route path="/shipping" element={<ShippingAddressScreen />} />
           <Route path='/cart' element={<CartScreen/>}/>
           <Route path='/payment' element={<PaymentScreen />} />
+          <Route path='/orderhistory' element={<OrderHistoryScreen />} />
           <Route path='/signin' element={<SigninScreen/>}/>
           <Route path='/signup' element={<SignupScreen/>}/>
         </Routes>

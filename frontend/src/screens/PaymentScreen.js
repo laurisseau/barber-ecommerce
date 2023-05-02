@@ -40,7 +40,22 @@ export default function PaymentScreen() {
       const { data } = await axios.post('/api/payment/create-payment-intent',{
         amount
       });
+/*
+      const  order  = await axios.post(
+        '/api/orders',
+        {
+          orderItems: cart.cartItems,
+          shippingAddress: cart.shippingAddress,
+          paymentMethod: cart.paymentMethod,
+          itemsPrice: cart.itemsPrice,
+          shippingPrice: cart.shippingPrice,
+          taxPrice: cart.taxPrice,
+          totalPrice: cart.totalPrice,
+        }
+      );
 
+      console.log(order)
+*/
       setClientSecret(data.clientSecret);
       setVisible('none');
     } catch (error) {

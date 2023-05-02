@@ -93,7 +93,22 @@ code {
   width: 300px;
 }
 
-.category-box{
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  border-radius: 5px;
+  right: 0;
+  height: 400px;
+  width: 300px;
+  opacity: 0;
+  transition: 0.5s ease;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.category-box {
   height: 400px;
   width: 300px;
   border-radius: 5px;
@@ -101,6 +116,22 @@ code {
 
 .category-box:hover {
   border: 1px solid red;
+}
+
+.overlay:hover {
+  opacity: 1;
+}
+
+.projectedText {
+  color: white;
+  font-size: 30px;
+  font-weight: 700;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .custom-card {
@@ -113,23 +144,22 @@ code {
   height: 100%;
 }
 
-.img-large{
+.img-large {
   max-width: 100%;
 }
 
-.small-container{
+.small-container {
   max-width: 600px;
 }
 
-.none{
+.none {
   display: none;
 }
 
-.add-and-min-btn{
+.add-and-min-btn {
   border: none;
   background-color: #ffff;
 }
-
 
 @media only screen and (max-width: 940px) {
   .first-body-text {

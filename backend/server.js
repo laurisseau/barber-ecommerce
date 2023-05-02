@@ -6,7 +6,7 @@ import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import paymentRouter from './routes/paymentRoutes.js';
 //import userRouter from './routes/userRoutes.js';
-//import orderRouter from './routes/orderRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
 
 dotenv.config({ path: 'config.env' });
 
@@ -26,7 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
-app.use('/api/payment', paymentRouter)
+app.use('/api/payment', paymentRouter);
+app.use('/api/orders', orderRouter)
 
 //app.use('/api/users', userRouter);
 //app.use('/api/orders', orderRouter);

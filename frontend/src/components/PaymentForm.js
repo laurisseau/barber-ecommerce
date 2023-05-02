@@ -1,15 +1,10 @@
-
-import { useState } from "react";
-import axios from "axios";
-import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { PaymentElement } from "@stripe/react-stripe-js";
-import Button from "react-bootstrap/Button";
-//import { useParams } from "react-router-dom";
+import { useState } from 'react';
+import axios from 'axios';
+import { useStripe, useElements } from '@stripe/react-stripe-js';
+import { PaymentElement } from '@stripe/react-stripe-js';
+import Button from 'react-bootstrap/Button';
 
 export default function PaymentForm() {
-  //const params = useParams();
-  //const { id } = params;
-
   const [isProcessing, setIsProcessing] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
@@ -26,22 +21,18 @@ export default function PaymentForm() {
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "",
+        return_url: '',
       },
-      redirect: "if_required",
+      redirect: 'if_required',
     });
 
     if (error) {
       console.log(error);
-    } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        /*
-      const { data } = await axios.put(
-        `/api/appointment/updatePaidAppointment/${id}`
-      );
-      */
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+      //const { data } = await axios.put(`/api/orders/${order._id}/pay`);
 
       //if (data) {
-        window.location.href = "/"
+      window.location.href = '/';
       //}
     }
     setIsProcessing(false);
@@ -63,4 +54,3 @@ export default function PaymentForm() {
     </form>
   );
 }
-
