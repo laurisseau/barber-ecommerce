@@ -3,11 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import Button from 'react-bootstrap/Button';
-//import Axios from 'axios';
+import Axios from 'axios';
 import { useContext, useState, useEffect } from 'react';
 import { Store } from '../Store';
-//import { toast } from 'react-toastify'
-//import { getError } from '../utils';
+import { toast } from 'react-toastify'
+import { getError } from '../utils';
 
 export default function SigninScreen() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function SigninScreen() {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  /*
+  
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -35,7 +35,7 @@ export default function SigninScreen() {
       toast.error(getError(err));
     }
   };
-*/
+
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
@@ -48,7 +48,7 @@ export default function SigninScreen() {
         <title>Sign In</title>
       </Helmet>
       <h1 className="my-3">Sign In</h1>
-      <Form >
+      <Form onClick={submitHandler}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control

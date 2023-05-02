@@ -108,8 +108,8 @@ export default function HomeScreen() {
                       src={category.image}
                       className="category-box "
                     ></img>
-                    <div class="overlay">
-                      <h2 class="projectedText">{category.slug}</h2>
+                    <div className="overlay">
+                      <h2 className="projectedText">{category.slug}</h2>
                     </div>
                   </a>
                 </div>

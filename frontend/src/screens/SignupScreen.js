@@ -3,11 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import Button from 'react-bootstrap/Button';
-//import Axios from 'axios';
+import Axios from 'axios';
 import { useContext, useState, useEffect } from 'react';
 import { Store } from '../Store';
-//import { toast } from 'react-toastify';
-//import { getError } from '../utils';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 
 export default function SignupScreen() {
   const navigate = useNavigate();
@@ -15,14 +15,15 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
-  const [name, setName] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  /*
+
   const submitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -31,18 +32,21 @@ export default function SignupScreen() {
     }
     try {
       const { data } = await Axios.post('/api/users/signup', {
-        name,
+        firstname,
+        lastname,
         email,
         password,
+        confirmPassword
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(redirect || '/');
     } catch (err) {
+      console.log(err)
       toast.error(getError(err));
     }
   };
-  */
+  
 
   useEffect(() => {
     if (userInfo) {
@@ -56,13 +60,22 @@ export default function SignupScreen() {
         <title>Sign Up</title>
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
-      <Form>
-        <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Name</Form.Label>
+      <Form onSubmit={submitHandler}>
+        <Form.Group className="mb-3" controlId="firstname">
+          <Form.Label>Firstname</Form.Label>
           <Form.Control
-            type="name"
+            type="firstname"
             required
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setFirstname(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="lastname">
+          <Form.Label>Lastname</Form.Label>
+          <Form.Control
+            type="lastname"
+            required
+            onChange={(e) => setLastname(e.target.value)}
           />
         </Form.Group>
 
