@@ -1,5 +1,5 @@
 import express from 'express';
-//import { isAuth } from '../utils.js';
+import { isAuth } from '../utils.js';
 import {
   pay,
   getOrder,
@@ -9,12 +9,12 @@ import {
 
 const orderRouter = express.Router();
 
-orderRouter.post('/', saveOrder);
+orderRouter.post('/', isAuth, saveOrder);
 
-orderRouter.get('/mine', myOrder);
+orderRouter.get('/mine', isAuth ,myOrder);
 
-orderRouter.get('/:id', getOrder);
+orderRouter.get('/:id', isAuth ,getOrder);
 
-orderRouter.put('/:id/pay', pay);
+orderRouter.put('/:id/pay', isAuth ,pay);
 
 export default orderRouter;

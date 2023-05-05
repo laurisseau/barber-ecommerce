@@ -37,12 +37,10 @@ export default function PaymentScreen() {
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post('/api/payment/create-payment-intent',{
-        amount
-      });
-/*
+
+
       const  order  = await axios.post(
-        '/api/orders',
+        '/api/orders/',
         {
           orderItems: cart.cartItems,
           shippingAddress: cart.shippingAddress,
@@ -51,11 +49,20 @@ export default function PaymentScreen() {
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
         }
       );
 
+      const { data } = await axios.post('/api/payment/create-payment-intent',{
+        amount
+      });
+
       console.log(order)
-*/
+
       setClientSecret(data.clientSecret);
       setVisible('none');
     } catch (error) {
