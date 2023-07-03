@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { sendEmail } from "../sendEmail.js";
 import expressAsyncHandler from "express-async-handler";
 import { generateToken } from "../utils.js";
-
+// none
 export const signin = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
