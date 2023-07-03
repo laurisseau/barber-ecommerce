@@ -1,134 +1,56 @@
-import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import { sendEmail } from "../sendEmail.js";
-import expressAsyncHandler from "express-async-handler";
-import { generateToken } from "../utils.js";
-// none
-export const signin = expressAsyncHandler(async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (user) {
-    if (bcrypt.compareSync(req.body.password, user.password)) {
-      res.send({
-        _id: user._id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        isUser: user.isUser,
-        token: generateToken(user),
-      });
-      return;
-    }
-  }
-  res.status(401).send({ message: "Invalid email or password" });
-});
+import {
+  CognitoUserPool,
+  CognitoUserAttribute,
+  AuthenticationDetails,
+  CognitoUser,
+} from 'amazon-cognito-identity-js';
+import expressAsyncHandler from 'express-async-handler';
+import { generateToken } from '../utils.js';
+import AWS from 'aws-sdk';
+import jwt from 'jsonwebtoken';
+import jwkToPem from 'jwk-to-pem';
+//import fetch from 'node-fetch/esm'
+
+const poolData = {
+  UserPoolId: 'us-east-1_FXpZlVYPc',
+  ClientId: '4qqed9a375uh0mpgsmjphjbe09',
+};
+
+const userPool = new CognitoUserPool(poolData);
 
 export const signup = expressAsyncHandler(async (req, res) => {
+  const attributeList = [];
+  const dataEmail = {
+    Name: 'email',
+    Value: req.body.email, // Replace with the user's email
+  };
 
-  const user = await User.create(req.body);
+  const dataUsername = {
+    Name: 'preferred_username',
+    Value: req.body.username, // Replace with the user's username
+  };
 
-  res.send({
-    _id: user._id,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    email: user.email,
-    isUser: user.isUser,
-    token: generateToken(user),
-  });
-});
+  const attributeEmail = new CognitoUserAttribute(dataEmail);
+  const attributeUsername = new CognitoUserAttribute(dataUsername);
 
-export const updateProfile = expressAsyncHandler(async (req, res, next) => {
-  //console.log(req.user, "update");
+  attributeList.push(attributeEmail);
+  attributeList.push(attributeUsername);
 
-  const user = await User.findById(req.user._id);
-
-  if (user) {
-    user.firstname = req.body.firstname || user.firstname;
-    user.lastname = req.body.lastname || user.lastname;
-    user.email = req.body.email || user.email;
-
-    if (req.body.password) {
-      user.password = req.body.password;
-      user.confirmPassword = req.body.confirmPassword;
+  userPool.signUp(
+    req.body.email,
+    req.body.password,
+    attributeList,
+    null,
+    (err, result) => {
+      if (err) {
+        res.send(err);
+      }
+      const cognitoUser = result.user;
+      const user = cognitoUser.getUsername();
+      res.send({
+        email: user,
+        token: generateToken(user),
+      });
     }
-
-    const update = await user.save();
-
-    res.send({
-      _id: update._id,
-      firstname: update.firstname,
-      lastname: update.lastname,
-      email: update.email,
-      isUser: update.isUser,
-      token: generateToken(update),
-    });
-  } else {
-    res.status(401).send({ message: "user not found" });
-  }
-
-});
-
-export const forgotPassword = expressAsyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
-
-  if (!user) {
-    return next(
-      res
-        .status(404)
-        .send({ message: "there is noone with that email Address" })
-    );
-  }
-
-  const resetToken = user.createPasswordResetToken();
-
-  await user.save({ validateBeforeSave: false });
-
-  try {
-    // const resetURL = `${req.protocol}://${req.get(
-    //   "host"
-    // )}/resetPassword/${resetToken}`;
-
-    const resetURL = `${req.protocol}://${req.get(
-      "x-forwarded-host"
-    )}/resetPassword/${resetToken}`;
-
-    sendEmail(req.body.email, resetURL);
-
-    res.send({ message: "token sent to email" });
-  } catch (err) {
-    user.createPasswordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
-
-    return next(
-      res.status(500).send({ message: "there was an error sending an email" })
-    );
-  }
-});
-
-export const resetPassword = expressAsyncHandler(async (req, res, next) => {
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
-
-  const user = await User.findOne({
-    createPasswordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    return next(
-      res.status(400).send({ message:  "time to update password expired"  })
-    );
-  }
-
-  user.password = req.body.password;
-  user.confirmPassword = req.body.confirmPassword;
-  user.createPasswordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-
-  await user.save();
-
-  res.send({ message: "password Changed" });
+  );
 });
