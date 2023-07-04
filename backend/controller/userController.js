@@ -5,9 +5,9 @@ import {
   CognitoUser,
 } from 'amazon-cognito-identity-js';
 import expressAsyncHandler from 'express-async-handler';
-import { generateToken } from '../utils.js';
+import { generateToken, decode } from '../utils.js';
 import AWS from 'aws-sdk';
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 //import fetch from 'node-fetch/esm'
 
@@ -30,11 +30,18 @@ export const signup = expressAsyncHandler(async (req, res) => {
     Value: req.body.username, // Replace with the user's username
   };
 
+  const dataJwt = {
+    Name: 'custom:jwt',
+    Value: 'reso',
+  };
+
   const attributeEmail = new CognitoUserAttribute(dataEmail);
   const attributeUsername = new CognitoUserAttribute(dataUsername);
+  const attributeJwt = new CognitoUserAttribute(dataJwt);
 
   attributeList.push(attributeEmail);
   attributeList.push(attributeUsername);
+  attributeList.push(attributeJwt);
 
   userPool.signUp(
     req.body.email,
@@ -44,13 +51,27 @@ export const signup = expressAsyncHandler(async (req, res) => {
     (err, result) => {
       if (err) {
         res.send(err);
+        console.log(err);
       }
       const cognitoUser = result.user;
       const user = cognitoUser.getUsername();
+
       res.send({
         email: user,
-        token: generateToken(user),
+        token: generateToken({ email: user }),
       });
     }
   );
 });
+
+export const decodeJwtToVerify = expressAsyncHandler(async (req, res) => {
+  const email = decode(req.params.id);
+
+  res.send({ email });
+});
+
+export const emailVerification = expressAsyncHandler(async (req, res) => {});
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc28wMjA4QGdtYWlsLmNvbSIsImlhdCI6MTY4ODQ1NjAzMCwiZXhwIjoxNjkxMDQ4MDMwfQ.6rL45Ov1_opQLC4IVCnleZdaHfcXbAvMDiL4GlSVwxo
+
+const att = () => {};
