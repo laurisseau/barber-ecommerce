@@ -32,7 +32,7 @@ export const signup = expressAsyncHandler(async (req, res) => {
 
   const dataJwt = {
     Name: 'custom:jwt',
-    Value: 'reso',
+    Value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc28wMjA4QGdtYWlsLmNvbSIsImlhdCI6MTY4ODUzMzY1MCwiZXhwIjoxNjkxMTI1NjUwfQ.B7YMp-TFxOAGj4HwpNNTLfksP5UAiPCA4rQ6l1qr1_U',
   };
 
   const attributeEmail = new CognitoUserAttribute(dataEmail);
