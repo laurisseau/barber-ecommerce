@@ -20,6 +20,8 @@ const userPool = new CognitoUserPool(poolData);
 
 export const signup = expressAsyncHandler(async (req, res) => {
   const attributeList = [];
+  const emailToken = generateToken({email: req.body.email})
+
   const dataEmail = {
     Name: 'email',
     Value: req.body.email, // Replace with the user's email
@@ -32,16 +34,23 @@ export const signup = expressAsyncHandler(async (req, res) => {
 
   const dataJwt = {
     Name: 'custom:jwt',
-    Value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc28wMjA4QGdtYWlsLmNvbSIsImlhdCI6MTY4ODUzMzY1MCwiZXhwIjoxNjkxMTI1NjUwfQ.B7YMp-TFxOAGj4HwpNNTLfksP5UAiPCA4rQ6l1qr1_U',
+    Value: emailToken ,
   };
+
+  const dataLink = {
+    Name: 'custom:link',
+    Value: `${req.protocol}://${req.get("x-forwarded-host")}/otp/${emailToken}`
+  }
 
   const attributeEmail = new CognitoUserAttribute(dataEmail);
   const attributeUsername = new CognitoUserAttribute(dataUsername);
   const attributeJwt = new CognitoUserAttribute(dataJwt);
+  const attributeLink = new CognitoUserAttribute(dataLink)
 
   attributeList.push(attributeEmail);
   attributeList.push(attributeUsername);
   attributeList.push(attributeJwt);
+  attributeList.push(attributeLink)
 
   userPool.signUp(
     req.body.email,
@@ -56,9 +65,19 @@ export const signup = expressAsyncHandler(async (req, res) => {
       const cognitoUser = result.user;
       const user = cognitoUser.getUsername();
 
+      // Find the CognitoUserAttribute with the 'custom:jwt' Name
+      const customJwtAttribute = attributeList.find(
+        (attribute) => attribute.Name === 'custom:jwt'
+      );
+
+      // Get the value of the 'custom:jwt' attribute
+      const customJwtValue = customJwtAttribute
+        ? customJwtAttribute.Value
+        : null;
+
       res.send({
         email: user,
-        token: generateToken({ email: user }),
+        token: customJwtValue,
       });
     }
   );
@@ -67,11 +86,10 @@ export const signup = expressAsyncHandler(async (req, res) => {
 export const decodeJwtToVerify = expressAsyncHandler(async (req, res) => {
   const email = decode(req.params.id);
 
-  res.send({ email });
+  res.send({email: email });
 });
 
 export const emailVerification = expressAsyncHandler(async (req, res) => {});
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc28wMjA4QGdtYWlsLmNvbSIsImlhdCI6MTY4ODQ1NjAzMCwiZXhwIjoxNjkxMDQ4MDMwfQ.6rL45Ov1_opQLC4IVCnleZdaHfcXbAvMDiL4GlSVwxo
 
-const att = () => {};
+console.log('hi')

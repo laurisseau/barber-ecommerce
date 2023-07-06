@@ -13,6 +13,7 @@ import ShippingAddressScreen from './screens/shippingAddressScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import OrderScreen from './screens/OrderScreen'
+import OTPScreen from './screens/OTPScreen';
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/signin" element={<SigninScreen />} />
             <Route path="/signup" element={<SignupScreen />} />
+            <Route path="/otp/:jwt" element={<OTPScreen />} />
           </Routes>
         </main>
 

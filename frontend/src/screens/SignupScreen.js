@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import Button from 'react-bootstrap/Button';
-import Axios from 'axios';
+import axios from 'axios';
 import { useContext, useState, useEffect } from 'react';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
@@ -15,8 +15,7 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,22 +30,19 @@ export default function SignupScreen() {
       return;
     }
     try {
-      const { data } = await Axios.post('/api/users/signup', {
-        firstname,
-        lastname,
+      const { data } = await axios.post('/api/users/signup', {
+        username,
         email,
         password,
-        confirmPassword
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      //localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate(`/otp/${data.token}`);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast.error(getError(err));
     }
   };
-  
 
   useEffect(() => {
     if (userInfo) {
@@ -61,21 +57,12 @@ export default function SignupScreen() {
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
       <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="firstname">
-          <Form.Label>Firstname</Form.Label>
+        <Form.Group className="mb-3" controlId="username">
+          <Form.Label>Username</Form.Label>
           <Form.Control
-            type="firstname"
+            type="Username"
             required
-            onChange={(e) => setFirstname(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="lastname">
-          <Form.Label>Lastname</Form.Label>
-          <Form.Control
-            type="lastname"
-            required
-            onChange={(e) => setLastname(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
 
