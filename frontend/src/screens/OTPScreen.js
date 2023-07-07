@@ -4,8 +4,16 @@ import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
+import Axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function OTPScreen() {
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl ? redirectInUrl : '/';
   const params = useParams();
   const { jwt } = params;
   const [otp, setOtp] = useState(new Array(6).fill(''));
@@ -48,9 +56,22 @@ export default function OTPScreen() {
     fetchEmail();
   }, [jwt]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const otpValue = otp.join('');
-    console.log('Submitted OTP:', otpValue);
+    try {
+      const { data } = await Axios.post('/api/users/emailVerification', {
+        username: email,
+        code: otpValue,
+      });
+      //ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+      //localStorage.setItem('userInfo', JSON.stringify(data));
+      if (data) {
+        navigate(redirect || '/');
+      }
+    } catch (err) {
+      toast.error(getError(err));
+    }
   };
 
   return (

@@ -1,15 +1,12 @@
 import {
   CognitoUserPool,
   CognitoUserAttribute,
-  AuthenticationDetails,
-  CognitoUser,
 } from 'amazon-cognito-identity-js';
 import expressAsyncHandler from 'express-async-handler';
 import { generateToken, decode } from '../utils.js';
-import AWS from 'aws-sdk';
-//import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
-//import fetch from 'node-fetch/esm'
+import pkg from 'aws-sdk';
+
+const { CognitoIdentityServiceProvider } = pkg;
 
 const poolData = {
   UserPoolId: 'us-east-1_FXpZlVYPc',
@@ -18,9 +15,11 @@ const poolData = {
 
 const userPool = new CognitoUserPool(poolData);
 
+const cognito = new CognitoIdentityServiceProvider({ region: 'us-east-1' });
+
 export const signup = expressAsyncHandler(async (req, res) => {
   const attributeList = [];
-  const emailToken = generateToken({email: req.body.email})
+  const emailToken = generateToken({ email: req.body.email });
 
   const dataEmail = {
     Name: 'email',
@@ -34,23 +33,23 @@ export const signup = expressAsyncHandler(async (req, res) => {
 
   const dataJwt = {
     Name: 'custom:jwt',
-    Value: emailToken ,
+    Value: emailToken,
   };
 
   const dataLink = {
     Name: 'custom:link',
-    Value: `${req.protocol}://${req.get("x-forwarded-host")}/otp/${emailToken}`
-  }
+    Value: `${req.protocol}://${req.get('x-forwarded-host')}/otp/${emailToken}`,
+  };
 
   const attributeEmail = new CognitoUserAttribute(dataEmail);
   const attributeUsername = new CognitoUserAttribute(dataUsername);
   const attributeJwt = new CognitoUserAttribute(dataJwt);
-  const attributeLink = new CognitoUserAttribute(dataLink)
+  const attributeLink = new CognitoUserAttribute(dataLink);
 
   attributeList.push(attributeEmail);
   attributeList.push(attributeUsername);
   attributeList.push(attributeJwt);
-  attributeList.push(attributeLink)
+  attributeList.push(attributeLink);
 
   userPool.signUp(
     req.body.email,
@@ -86,10 +85,20 @@ export const signup = expressAsyncHandler(async (req, res) => {
 export const decodeJwtToVerify = expressAsyncHandler(async (req, res) => {
   const email = decode(req.params.id);
 
-  res.send({email: email });
+  res.send({ email: email });
 });
 
-export const emailVerification = expressAsyncHandler(async (req, res) => {});
+export const emailVerification = expressAsyncHandler(async (req, res) => {
+  const params = {
+    ConfirmationCode: req.body.code,
+    Username: req.body.username,
+    ClientId: '4qqed9a375uh0mpgsmjphjbe09',
+  };
 
-
-console.log('hi')
+  try {
+    await cognito.confirmSignUp(params).promise();
+    res.send('User email confirmed successfully.');
+  } catch (error) {
+    res.send('Error confirming user email');
+  }
+});
