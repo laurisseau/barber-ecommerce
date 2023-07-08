@@ -5,12 +5,13 @@ import {
 import expressAsyncHandler from 'express-async-handler';
 import { generateToken, decode } from '../utils.js';
 import pkg from 'aws-sdk';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
 
 const { CognitoIdentityServiceProvider } = pkg;
 
 const poolData = {
-  UserPoolId: 'us-east-1_FXpZlVYPc',
-  ClientId: '4qqed9a375uh0mpgsmjphjbe09',
+  UserPoolId: process.env.USER_POOL_ID,
+  ClientId: process.env.CLIENT_ID,
 };
 
 const userPool = new CognitoUserPool(poolData);
@@ -92,13 +93,33 @@ export const emailVerification = expressAsyncHandler(async (req, res) => {
   const params = {
     ConfirmationCode: req.body.code,
     Username: req.body.username,
-    ClientId: '4qqed9a375uh0mpgsmjphjbe09',
+    ClientId: process.env.CLIENT_ID,
   };
 
-  try {
-    await cognito.confirmSignUp(params).promise();
-    res.send('User email confirmed successfully.');
-  } catch (error) {
-    res.send('Error confirming user email');
-  }
+  await cognito.confirmSignUp(params).promise();
+  res.send('User email confirmed successfully.');
+});
+
+export const login = expressAsyncHandler(async (req, res) => {
+  const params = {
+    AuthFlow: 'USER_PASSWORD_AUTH',
+    ClientId: process.env.CLIENT_ID,
+    AuthParameters: {
+      USERNAME: req.body.username,
+      PASSWORD: req.body.password,
+    },
+  };
+
+  const data = await cognito.initiateAuth(params).promise();
+  const idToken = data.AuthenticationResult.IdToken;
+
+  const verifier = CognitoJwtVerifier.create({
+    userPoolId: process.env.USER_POOL_ID,
+    tokenUse: 'id',
+    clientId: process.env.CLIENT_ID,
+  });
+
+  const payload = await verifier.verify(idToken);
+
+  res.send(payload);
 });
