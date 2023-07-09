@@ -51,11 +51,11 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
 
     const verifier = CognitoJwtVerifier.create({
       userPoolId: process.env.USER_POOL_ID,
-      tokenUse: 'access',
+      tokenUse: 'id',
       clientId: process.env.CLIENT_ID,
     });
 
-    await verifier.verify(token);
+    await verifier.verify(token)
 
   }
   next()
