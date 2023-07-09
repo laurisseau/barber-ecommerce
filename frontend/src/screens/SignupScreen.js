@@ -37,7 +37,7 @@ export default function SignupScreen() {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       //localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(`/otp/${data.token}`);
+      navigate(data.url);
     } catch (err) {
       console.log(err);
       toast.error(getError(err));
