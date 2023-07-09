@@ -1,8 +1,6 @@
 import Order from '../models/orderModel.js';
 import expressAsyncHandler from 'express-async-handler';
 
-//kjjh[oi]
-
 export  const saveOrder = expressAsyncHandler(async (req, res) => {
 
   const newOrder = new Order({

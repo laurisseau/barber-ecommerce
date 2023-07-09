@@ -55,7 +55,7 @@ export default function NavBarComp() {
               </Nav.Link>
 
               {userInfo ? (
-                <NavDropdown title={userInfo.firstname} id="basic-nav-dropdown">
+                <NavDropdown title={userInfo.preferred_username} id="basic-nav-dropdown">
                   <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                   <NavDropdown.Item href="/orderHistory">
                     Order History

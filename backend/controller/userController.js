@@ -32,11 +32,6 @@ export const signup = expressAsyncHandler(async (req, res) => {
     Value: req.body.username, // Replace with the user's username
   };
 
-  const dataJwt = {
-    Name: 'custom:jwt',
-    Value: emailToken,
-  };
-
   const dataLink = {
     Name: 'custom:link',
     Value: `${req.protocol}://${req.get('x-forwarded-host')}/otp/${emailToken}`,
@@ -44,12 +39,10 @@ export const signup = expressAsyncHandler(async (req, res) => {
 
   const attributeEmail = new CognitoUserAttribute(dataEmail);
   const attributeUsername = new CognitoUserAttribute(dataUsername);
-  const attributeJwt = new CognitoUserAttribute(dataJwt);
   const attributeLink = new CognitoUserAttribute(dataLink);
 
   attributeList.push(attributeEmail);
   attributeList.push(attributeUsername);
-  attributeList.push(attributeJwt);
   attributeList.push(attributeLink);
 
   userPool.signUp(
@@ -65,19 +58,9 @@ export const signup = expressAsyncHandler(async (req, res) => {
       const cognitoUser = result.user;
       const user = cognitoUser.getUsername();
 
-      // Find the CognitoUserAttribute with the 'custom:jwt' Name
-      const customJwtAttribute = attributeList.find(
-        (attribute) => attribute.Name === 'custom:jwt'
-      );
-
-      // Get the value of the 'custom:jwt' attribute
-      const customJwtValue = customJwtAttribute
-        ? customJwtAttribute.Value
-        : null;
-
       res.send({
         email: user,
-        token: customJwtValue,
+        url: `${req.protocol}://${req.get('x-forwarded-host')}/otp/${emailToken}`
       });
     }
   );
@@ -112,6 +95,7 @@ export const login = expressAsyncHandler(async (req, res) => {
 
   const data = await cognito.initiateAuth(params).promise();
   const idToken = data.AuthenticationResult.IdToken;
+  const accessToken = data.AuthenticationResult.AccessToken;
 
   const verifier = CognitoJwtVerifier.create({
     userPoolId: process.env.USER_POOL_ID,
@@ -120,6 +104,8 @@ export const login = expressAsyncHandler(async (req, res) => {
   });
 
   const payload = await verifier.verify(idToken);
+
+  payload['token'] = accessToken;
 
   res.send(payload);
 });

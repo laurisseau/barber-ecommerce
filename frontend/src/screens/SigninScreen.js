@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Axios from 'axios';
 import { useContext, useState, useEffect } from 'react';
 import { Store } from '../Store';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
 export default function SigninScreen() {
@@ -20,18 +20,20 @@ export default function SigninScreen() {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await Axios.post('/api/users/signin', {
-        email,
-        password,
+      const {data} = await Axios.post('/api/users/login', {
+        username: email,
+        password: password,
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(redirect || '/');
+      //console.log(data);
     } catch (err) {
+      console.log(err);
       toast.error(getError(err));
     }
   };
@@ -48,7 +50,7 @@ export default function SigninScreen() {
         <title>Sign In</title>
       </Helmet>
       <h1 className="my-3">Sign In</h1>
-      <Form onClick={submitHandler}>
+      <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
