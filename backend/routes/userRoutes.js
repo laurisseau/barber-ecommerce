@@ -3,7 +3,7 @@ import express from 'express';
 //import {forgotPassword, signin, signup, updateProfile, resetPassword } from "../Controller/userController.js";
 
 import { isAuth } from "../utils.js";
-import { signup, decodeJwtToVerify, emailVerification, login, updateProfile, updatedEmailVerification } from "../Controller/userController.js";
+import { signup, decodeJwtToVerify, emailVerification, login, updateProfile, updatedEmailVerification, forgotPassword, resetPassword } from "../Controller/userController.js";
 
 const userRouter = express.Router();
 
@@ -17,9 +17,9 @@ userRouter.post('/emailVerification', emailVerification)
 
 userRouter.post('/updateEmailVerification', updatedEmailVerification)
 
-//userRouter.post("/forgotPassword", forgotPassword);
+userRouter.post("/forgotPassword", forgotPassword);
 
-//userRouter.patch("/resetPassword/:token", resetPassword);
+userRouter.patch("/resetPassword/:token", resetPassword);
 
 userRouter.put("/profile", isAuth, updateProfile);
 
