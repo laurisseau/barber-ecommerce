@@ -1,25 +1,12 @@
 import Container from 'react-bootstrap/Container';
-import { useParams } from 'react-router-dom';
-//import { Helmet } from 'react-helmet-async';
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import Axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function OtpBox({handleSubmit, email}) {
-  const navigate = useNavigate();
-  const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
-  const params = useParams();
-  const { jwt } = params;
+export default function OtpBox({ handleSubmit, email, choice }) {
   const [otp, setOtp] = useState(new Array(6).fill(''));
-  //const [email, setEmail] = useState('');
 
   const handleChange = (e, index) => {
+    e.preventDefault();
     const newOtp = [...otp];
     newOtp[index] = e.target.value;
     setOtp(newOtp);
@@ -66,7 +53,11 @@ export default function OtpBox({handleSubmit, email}) {
           ))}
         </div>
         <div className="d-flex justify-content-center">
-          <button className="otp-submit " onClick={() => handleSubmit(otp)}>
+          <button
+            className="otp-submit "
+            type="button"
+            onClick={() => handleSubmit(otp)}
+          >
             Submit
           </button>
         </div>

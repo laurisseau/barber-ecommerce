@@ -150,10 +150,10 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
 
   cognito.updateUserAttributes(params, (err, data) => {
     if (err) {
-      console.error('Failed to update user attributes:', err);
+      //console.error('Failed to update user attributes:', err);
       res.send('Failed to update user attributes');
     } else {
-      console.log('User attributes updated successfully:', data);
+      //console.log('User attributes updated successfully:', data);
       res.send({ email: req.body.email, username: req.body.username });
     }
   });
@@ -174,7 +174,7 @@ export const updatedEmailVerification = expressAsyncHandler(
 
     const result = await cognito.verifyUserAttribute(params).promise();
     res.send('User email confirmed successfully.');
-    console.log(result);
+    //console.log(result);
   }
 );
 
@@ -188,26 +188,20 @@ export const forgotPassword = expressAsyncHandler(async (req, res) => {
 
   cognitoUser.forgotPassword({
     onSuccess: () => {
-      console.log('Password reset code sent successfully');
+      //console.log('Password reset code sent successfully');
       res.send('Password reset code sent successfully');
     },
     onFailure: (err) => {
-      console.error('Failed to send password reset code:', err);
+      //console.error('Failed to send password reset code:', err);
       res.status(400).send('Failed to send password reset code');
     },
   });
 });
 
-
 export const resetPassword = expressAsyncHandler(async (req, res) => {
+  const decoded = decode(req.params.token);
 
-  const obj = decode(req.params.token);
-
-  console.log(obj)
-  res.send(obj)
-/*
-  const code = '123'
-  const email = 'email'
+  const email = decoded.email;
 
   const userData = {
     Username: email,
@@ -216,15 +210,14 @@ export const resetPassword = expressAsyncHandler(async (req, res) => {
 
   const cognitoUser = new CognitoUser(userData);
 
-  cognitoUser.confirmPassword(code, req.body.newPassword, {
+  cognitoUser.confirmPassword(req.body.code, req.body.newPassword, {
     onSuccess: () => {
-      console.log('Password reset confirmed successfully');
+      //console.log('Password reset confirmed successfully');
       res.send('Password reset confirmed successfully');
     },
     onFailure: (err) => {
-      console.error('Failed to confirm password reset:', err);
+      //console.error('Failed to confirm password reset:', err);
       res.status(400).send('Failed to confirm password reset');
     },
   });
-  */
 });

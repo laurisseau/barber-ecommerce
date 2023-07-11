@@ -16,6 +16,8 @@ import OrderScreen from './screens/OrderScreen'
 import OTPScreen from './screens/OTPScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import UpdateEmailScreen from './screens/UpdateEmailScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ function App() {
             <Route path="signup/otp/:jwt" element={<OTPScreen />} />
             <Route path="/updateemail/:encodedEmail" element={<UpdateEmailScreen/>}/>
             <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
+            <Route path="/resetPassword/:token" element={<ResetPasswordScreen/>}/>
           </Routes>
         </main>
 

@@ -1,4 +1,4 @@
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
@@ -9,29 +9,27 @@ import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
-export default function SigninScreen() {
+export default function ForgotPasswordScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { userInfo } = state;
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await Axios.post('/api/users/login', {
-        username: email,
-        password: password,
+      const { data } = await Axios.post('/api/users/forgotPassword', {
+        email,
       });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
-      //console.log(data);
+      if (data) {
+        console.log(data);
+        console.log('email sent');
+      }
     } catch (err) {
       console.log(err);
       toast.error(getError(err));
@@ -47,9 +45,9 @@ export default function SigninScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Sign In</title>
+        <title>forgot password</title>
       </Helmet>
-      <h1 className="my-3">Sign In</h1>
+      <h1 className="my-3">Forgot password</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
@@ -60,22 +58,8 @@ export default function SigninScreen() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
         <div className="mb-3">
-          <Button type="submit">Sign In</Button>
-        </div>
-        <div className="mb-3">
-        <Link to={`/forgotpassword`}>Forgot password?</Link><br/>
-          New customer?{' '}
-          <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>
+          <Button type="submit">Send Email</Button>
         </div>
       </Form>
     </Container>

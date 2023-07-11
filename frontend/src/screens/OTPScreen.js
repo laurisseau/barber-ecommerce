@@ -1,20 +1,15 @@
-import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom';
 //import { Helmet } from 'react-helmet-async';
 import React, { useState, useEffect } from 'react';
-import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
 import Axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import OtpBox from "../components/OtpBox";
+import { useNavigate } from 'react-router-dom';
+import OtpBox from '../components/OtpBox';
 
 export default function OTPScreen() {
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
   const params = useParams();
   const { jwt } = params;
   const [email, setEmail] = useState('');
@@ -42,16 +37,15 @@ export default function OTPScreen() {
       if (data) {
         navigate(`/signin`);
       }
-
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast.error(getError(err));
     }
   };
 
   return (
     <div>
-    <OtpBox handleSubmit={handleSubmit} email={email} />
-  </div>
+      <OtpBox handleSubmit={handleSubmit} email={email} />
+    </div>
   );
 }

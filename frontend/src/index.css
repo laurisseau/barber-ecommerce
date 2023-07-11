@@ -204,6 +204,13 @@ code {
   justify-content: center;
 }
 
+.reset-otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .otp-input {
   width: 2.5rem;
   height: 2.5rem;
@@ -236,4 +243,8 @@ code {
 
 .otp-submit:active {
   background-color: #0b6b99;
+}
+
+.otp-reset-input {
+  width: 340px;
 }
