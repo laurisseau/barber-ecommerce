@@ -61,12 +61,12 @@ export default function PaymentScreen() {
         amount
       });
 
-      console.log(order)
+     // console.log(order)
 
       setClientSecret(data.clientSecret);
       setVisible('none');
     } catch (error) {
-      console.log(error);
+     // console.log(error);
     }
   };
 

@@ -33,7 +33,7 @@ export default function SigninScreen() {
       navigate(redirect || '/');
       //console.log(data);
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       toast.error(getError(err));
     }
   };

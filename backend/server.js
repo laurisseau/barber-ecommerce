@@ -7,6 +7,7 @@ import categoryRouter from './routes/categoryRoutes.js';
 import paymentRouter from './routes/paymentRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
+import {errorController} from './controller/errorController.js'
 
 dotenv.config({ path: 'config.env' });
 
@@ -39,9 +40,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
 })
 */
-app.use((err, req, res, next) => {
-  res.status(500).send({ message: err.stack });
-});
+
+app.use(errorController);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

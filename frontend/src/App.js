@@ -1,4 +1,6 @@
 import './App.css';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import HomeScreen from './screens/HomeScreen';
@@ -25,8 +27,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+      <ToastContainer position="bottom-center" autoClose={1000}/>
         <NavBarComp />
-
         <main>
           <Routes>
             <Route path="/" element={<HomeScreen />} />

@@ -1,20 +1,20 @@
-import React, { useContext, useReducer, useState } from "react";
-import { Helmet } from "react-helmet-async";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Store } from "../Store";
-import { toast } from "react-toastify";
-import { getError } from "../utils";
+import React, { useContext, useReducer, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { Store } from '../Store';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "UPDATE_REQUEST":
+    case 'UPDATE_REQUEST':
       return { ...state, loadingUpdate: true };
-    case "UPDATE_SUCCESS":
+    case 'UPDATE_SUCCESS':
       return { ...state, loadingUpdate: false };
-    case "UPDATE_FAIL":
+    case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
 
     default:
@@ -24,13 +24,12 @@ const reducer = (state, action) => {
 
 export default function ProfileScreen() {
   const navigate = useNavigate();
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { userInfo } = state;
   const awsUsername = userInfo.sub;
   const accessToken = userInfo.accessToken;
   const [username, setUsername] = useState(userInfo.preferred_username);
   const [email, setEmail] = useState(userInfo.email);
-  const [password, setPassword] = useState("");
   const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
     loadingUpdate: false,
   });
@@ -39,7 +38,7 @@ export default function ProfileScreen() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        "/api/users/profile",
+        '/api/users/profile',
         {
           awsUsername,
           accessToken,
@@ -51,37 +50,30 @@ export default function ProfileScreen() {
         }
       );
       dispatch({
-        type: "UPDATE_SUCCESS",
+        type: 'UPDATE_SUCCESS',
       });
 
-      if(data === "Failed to update user attributes"){
-        console.log(data)
-        return 'error'
-      }
+      const existingUserInfo = JSON.parse(localStorage.getItem('userInfo'));
 
-      const existingUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      //existingUserInfo.email = data.email;
       existingUserInfo.preferred_username = data.username;
 
-      localStorage.setItem("userInfo", JSON.stringify(existingUserInfo));
+      localStorage.setItem('userInfo', JSON.stringify(existingUserInfo));
 
-      if(userInfo.email !== email && data){
+      if (userInfo.email !== email && data) {
         const encodedSlug = btoa(data.email);
         navigate(`/updateemail/${encodedSlug}`);
       }
 
-      toast.success("User updated successfully");
+      toast.success('User updated successfully');
       window.location.reload();
     } catch (err) {
       dispatch({
-        type: "FETCH_FAIL",
+        type: 'FETCH_FAIL',
       });
       toast.error(getError(err));
-      console.log(err);
+      //console.log(err);
     }
   };
-
 
   return (
     <div>
@@ -124,4 +116,3 @@ export default function ProfileScreen() {
     </div>
   );
 }
-

@@ -27,11 +27,10 @@ export default function ForgotPasswordScreen() {
         email,
       });
       if (data) {
-        console.log(data);
-        console.log('email sent');
+        toast.success('Email Sent');
       }
     } catch (err) {
-      console.log(err);
+    //  console.log(err);
       toast.error(getError(err));
     }
   };

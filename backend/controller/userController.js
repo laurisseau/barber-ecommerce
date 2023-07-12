@@ -7,6 +7,7 @@ import expressAsyncHandler from 'express-async-handler';
 import { generateToken, decode } from '../utils.js';
 import pkg from 'aws-sdk';
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { errorController} from './errorController.js' 
 
 const { CognitoIdentityServiceProvider } = pkg;
 
@@ -69,8 +70,8 @@ export const signup = expressAsyncHandler(async (req, res) => {
     null,
     (err, result) => {
       if (err) {
-        res.send(err);
-        console.log(err);
+        errorController(err, req, res)
+        return
       }
       const cognitoUser = result.user;
       const user = cognitoUser.getUsername();
@@ -151,17 +152,12 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
   cognito.updateUserAttributes(params, (err, data) => {
     if (err) {
       //console.error('Failed to update user attributes:', err);
-      res.send('Failed to update user attributes');
+      res.status(404).json({message: 'Failed to update user attributes'});
     } else {
       //console.log('User attributes updated successfully:', data);
       res.send({ email: req.body.email, username: req.body.username });
     }
   });
-  // refactor this code
-  /*
-  const updatedUser = await cognito.updateUserAttributes(params);
-  res.send(updatedUser)
-*/
 });
 
 export const updatedEmailVerification = expressAsyncHandler(
@@ -172,9 +168,8 @@ export const updatedEmailVerification = expressAsyncHandler(
       Code: req.body.code,
     };
 
-    const result = await cognito.verifyUserAttribute(params).promise();
+    await cognito.verifyUserAttribute(params).promise();
     res.send('User email confirmed successfully.');
-    //console.log(result);
   }
 );
 
@@ -188,11 +183,9 @@ export const forgotPassword = expressAsyncHandler(async (req, res) => {
 
   cognitoUser.forgotPassword({
     onSuccess: () => {
-      //console.log('Password reset code sent successfully');
       res.send('Password reset code sent successfully');
     },
     onFailure: (err) => {
-      //console.error('Failed to send password reset code:', err);
       res.status(400).send('Failed to send password reset code');
     },
   });
@@ -212,12 +205,10 @@ export const resetPassword = expressAsyncHandler(async (req, res) => {
 
   cognitoUser.confirmPassword(req.body.code, req.body.newPassword, {
     onSuccess: () => {
-      //console.log('Password reset confirmed successfully');
       res.send('Password reset confirmed successfully');
     },
     onFailure: (err) => {
-      //console.error('Failed to confirm password reset:', err);
-      res.status(400).send('Failed to confirm password reset');
+      errorController(err, req, res)
     },
   });
 });

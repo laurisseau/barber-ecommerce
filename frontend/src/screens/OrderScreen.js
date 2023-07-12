@@ -85,7 +85,7 @@ export default function PaymentScreen() {
       setClientSecret(data.clientSecret);
       setVisible('none');
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

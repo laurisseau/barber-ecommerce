@@ -65,7 +65,7 @@ export default function ForgotPasswordScreen() {
         navigate(`/signin`);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       toast.error(getError(err));
     }
   };

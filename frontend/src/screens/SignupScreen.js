@@ -20,7 +20,64 @@ export default function SignupScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const passwordArr = password.split('');
+  const upperCaseArr = password.toUpperCase().split('');
+  const lowerCaseArr = password.toLowerCase().split('');
+
+  const filterLower = (lowerCaseArr) => {
+    return lowerCaseArr.filter((char) => /[a-zA-Z]/.test(char));
+  };
+
+  const filterUpper = (upperCaseArr) => {
+    return upperCaseArr.filter((char) => /[a-zA-Z]/.test(char));
+  };
+
+  const upperCaseArrResult = filterUpper(upperCaseArr);
+  const lowerCaseArrResult = filterLower(lowerCaseArr);
+
+  const [numVerification, setNumVerification] = useState('');
+  const [findSpecialCharacters, setFindSpecialCharacters] = useState('');
+  const [findUpperCase, setFindUpperCase] = useState('');
+  const [findLowerCase, setFindLowerCase] = useState('');
+  const [numOfCharacters, setNumOfCharacters] = useState('');
+
+  useEffect(() => {
+    const integerArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const specialCharacters = '~!@#$%^&*()_-+=[{]}|\\:;<>,.?/\'"';
+    const specialCharactersArr = specialCharacters.split('');
+
+    const findIntegers = passwordArr.find((e) => integerArr.includes(e));
+    const findSpecialCharacters = passwordArr.find((e) =>
+      specialCharactersArr.includes(e)
+    );
+    const findUpperCaseCharcters = passwordArr.find((e) =>
+      upperCaseArrResult.includes(e)
+    );
+
+    const findLowerCaseCharcters = passwordArr.find((e) =>
+      lowerCaseArrResult.includes(e)
+    );
+
+    const getClassBasedOnCondition = (condition) => {
+      return condition ? 'text-success' : 'text-danger';
+    };
+
+    setNumVerification(getClassBasedOnCondition(findIntegers));
+    setFindSpecialCharacters(getClassBasedOnCondition(findSpecialCharacters));
+    setFindUpperCase(getClassBasedOnCondition(findUpperCaseCharcters));
+    setFindLowerCase(getClassBasedOnCondition(findLowerCaseCharcters));
+    setNumOfCharacters(getClassBasedOnCondition(password.length >= 8));
+  }, [
+    passwordArr,
+    password,
+    findUpperCase,
+    upperCaseArr,
+    lowerCaseArr,
+    upperCaseArrResult,
+    lowerCaseArrResult,
+  ]);
+
+  const { state } = useContext(Store);
   const { userInfo } = state;
 
   const submitHandler = async (e) => {
@@ -35,11 +92,9 @@ export default function SignupScreen() {
         email,
         password,
       });
-      //ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      //localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(`otp/${data.token}`);
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       toast.error(getError(err));
     }
   };
@@ -92,6 +147,22 @@ export default function SignupScreen() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
+
+        <div className="mt-3 mb-3">
+          <div className={numOfCharacters}>
+            Password must be at least 8 characters long.
+          </div>
+          <div className={findUpperCase}>
+            password must have an uppercase character.
+          </div>
+          <div className={findLowerCase}>
+            password must have a lowercase character.
+          </div>
+          <div className={findSpecialCharacters}>
+            Password must have special characters.
+          </div>
+          <div className={numVerification}>Password must have numbers.</div>
+        </div>
 
         <div className="mb-3">
           <Button type="submit">Sign Up</Button>

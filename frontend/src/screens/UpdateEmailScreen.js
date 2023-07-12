@@ -33,6 +33,7 @@ export default function UpdateEmailScreen() {
         navigate('/');
       }
     } catch (err) {
+      //console.log(err)
       toast.error(getError(err));
     }
   };
