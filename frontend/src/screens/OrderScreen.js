@@ -1,8 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import PaymentForm from '../components/PaymentForm';
 import Container from 'react-bootstrap/Container';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -10,26 +7,18 @@ import { Store } from '../Store';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/esm/Button';
-import { useQuery } from 'react-query';
 import LoadingBox from '../components/LoadingBox';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 
-export default function PaymentScreen() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+export default function OrderScreen() {
+  const { state } = useContext(Store);
   const { userInfo } = state;
 
   const params = useParams();
   const { id: orderId } = params;
   const navigate = useNavigate();
-
-  const publishableKey =
-    'pk_test_51MN3hSJ51ecO3u1a177GPQMJUXXB2H0QUeLspccPLF0Ugqd2et6UtAq4TT3p6bV8JuQM1pD6Z6wjO8DP7tb97qiK00LxevrQNr';
-
-  const stripePromise = loadStripe(publishableKey);
-
-  const [clientSecret, setClientSecret] = useState('');
-  const [visible, setVisible] = useState('visible');
 
   const [itemsPrice, setItemsPrice] = useState('');
   const [shippingPrice, setShippingPrice] = useState('');
@@ -66,7 +55,8 @@ export default function PaymentScreen() {
           setOrderItems(data.orderItems);
         }
       } catch (err) {
-        console.log(err);
+        toast.error(getError(err));
+        //console.log(err);
       }
     };
     fetchOrder();
@@ -76,112 +66,52 @@ export default function PaymentScreen() {
     return navigate('/login');
   }
 
-  const submitHandler = async (orderPrice) => {
-    try {
-      const { data } = await axios.post('/api/payment/create-payment-intent', {
-        totalPrice,
-      });
-
-      setClientSecret(data.clientSecret);
-      setVisible('none');
-    } catch (error) {
-      //console.log(error);
-    }
-  };
-
   function PressedPayment(props) {
-    if (props.clientSecret === '') {
-      return (
-        <div>
-          {' '}
-          <Card className="p-3 mb-5">
-            <Card.Title> Order Summary</Card.Title>
+    return (
+      <div>
+        <Card className="p-3 mb-5">
+          <Card.Title> Order Summary</Card.Title>
 
-            <Row>
-              <Col>Items</Col>
-              <Col>${itemsPrice.toFixed(2)}</Col>
-            </Row>
+          <Row>
+            <Col>Items</Col>
+            <Col>${itemsPrice.toFixed(2)}</Col>
+          </Row>
 
-            <Row>
-              <Col>Shipping</Col>
-              <Col>${shippingPrice.toFixed(2)}</Col>
-            </Row>
+          <Row>
+            <Col>Shipping</Col>
+            <Col>${shippingPrice.toFixed(2)}</Col>
+          </Row>
 
-            <Row>
-              <Col>Tax</Col>
-              <Col>${taxPrice.toFixed(2)}</Col>
-            </Row>
+          <Row>
+            <Col>Tax</Col>
+            <Col>${taxPrice.toFixed(2)}</Col>
+          </Row>
 
-            <Row>
-              <Col>
-                <strong>Order Total</strong>
-              </Col>
-              <Col>
-                <strong>${totalPrice.toFixed(2)}</strong>
-              </Col>
-            </Row>
+          <Row>
+            <Col>
+              <strong>Order Total</strong>
+            </Col>
+            <Col>
+              <strong>${totalPrice.toFixed(2)}</strong>
+            </Col>
+          </Row>
 
-            <div className="d-grid mt-3">
-              <Button
-                type="button"
-                onClick={submitHandler}
-                //disabled={cart.cartItems.length === 0}
-                className={visible}
-              >
-                Place Order
-              </Button>
-            </div>
-          </Card>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Card className="p-3 mb-5">
-            <Card.Title> Order Summary</Card.Title>
-
-            <Row>
-              <Col>Items</Col>
-              <Col>${itemsPrice.toFixed(2)}</Col>
-            </Row>
-
-            <Row>
-              <Col>Shipping</Col>
-              <Col>${shippingPrice.toFixed(2)}</Col>
-            </Row>
-
-            <Row>
-              <Col>Tax</Col>
-              <Col>${taxPrice.toFixed(2)}</Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <strong>Order Total</strong>
-              </Col>
-              <Col>
-                <strong>${totalPrice.toFixed(2)}</strong>
-              </Col>
-            </Row>
-
-            <Elements
-              options={{ clientSecret: clientSecret }}
-              stripe={stripePromise}
-            >
-              <PaymentForm />
-            </Elements>
-          </Card>
-        </div>
-      );
-    }
+          <div className="d-grid mt-3">
+            <Button type="button" disabled={true}>
+              Paid
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
   }
 
   return (
     <Container className="">
       <Helmet>
-        <title>Preview Order</title>
+        <title>You Order</title>
       </Helmet>
-      <h1 className="mb-3">Preview Order</h1>
+      <h1 className="mb-3">Your Order</h1>
       {!isLoading ? (
         <Row>
           <Col md={8}>
@@ -233,7 +163,7 @@ export default function PaymentScreen() {
             </Card>
           </Col>
           <Col md={4}>
-            <PressedPayment clientSecret={clientSecret} />
+            <PressedPayment />
           </Col>
         </Row>
       ) : (

@@ -4,18 +4,19 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from '../components/PaymentForm';
 import Container from 'react-bootstrap/Container';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Store } from '../Store';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/esm/Button';
+import { toast } from 'react-toastify';
+import { getError } from '../utils'; 
 
 export default function PaymentScreen() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo } = state;
+  const { state } = useContext(Store);
+  const { cart } = state;
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
   cart.itemsPrice = round2(
@@ -38,34 +39,14 @@ export default function PaymentScreen() {
   const submitHandler = async () => {
     try {
 
-
-      const  order  = await axios.post(
-        '/api/orders/',
-        {
-          orderItems: cart.cartItems,
-          shippingAddress: cart.shippingAddress,
-          paymentMethod: cart.paymentMethod,
-          itemsPrice: cart.itemsPrice,
-          shippingPrice: cart.shippingPrice,
-          taxPrice: cart.taxPrice,
-          totalPrice: cart.totalPrice,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
-
       const { data } = await axios.post('/api/payment/create-payment-intent',{
         amount
       });
 
-     // console.log(order)
-
       setClientSecret(data.clientSecret);
       setVisible('none');
-    } catch (error) {
+    } catch (err) {
+      toast.error(getError(err));
      // console.log(error);
     }
   };

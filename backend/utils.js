@@ -16,7 +16,7 @@ export const generateToken = (user) => {
 
 export const decode = (emailToken) => {
   const decoded = jwt.verify(emailToken, process.env.JWT_USER_SECRET);
-  
+
   return decoded;
 };
 
@@ -31,9 +31,7 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
       clientId: process.env.CLIENT_ID,
     });
 
-    await verifier.verify(token)
-
+    req.user = await verifier.verify(token);
+    next();
   }
-  next()
 });
-

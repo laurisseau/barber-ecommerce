@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -14,6 +15,10 @@ code {
 
 .red {
   border: 1px solid red;
+}
+
+.dropdown-toggle::after {
+  display: none !important;
 }
 
 .medium-container {
@@ -247,4 +252,52 @@ code {
 
 .otp-reset-input {
   width: 340px;
+}
+
+/* ---------admin navbar-------------*/
+
+.nav-pills li a:hover {
+  background-color: #0c85d0;
+}
+
+.bg-gradient-cosmic {
+  background: linear-gradient(
+    to right,
+    rgb(142, 45, 226),
+    rgb(74, 0, 224)
+  ) !important;
+}
+
+.bg-gradient-burning {
+  background: linear-gradient(
+    to right,
+    rgb(255, 65, 108),
+    rgb(255, 75, 43)
+  ) !important;
+}
+
+.bg-gradient-Ohhappiness {
+  background: linear-gradient(
+    to right,
+    rgb(0, 176, 155),
+    rgb(150, 201, 61)
+  ) !important;
+}
+
+.admin-navbar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 20%;
+}
+
+@media only screen and (min-width: 564px) and (max-width: 1000px) {
+  .admin-navbar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 30%;
+  }
 }

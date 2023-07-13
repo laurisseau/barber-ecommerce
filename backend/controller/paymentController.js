@@ -8,12 +8,10 @@ export const paymentIntent = async (req, res) => {
 
     const amount = req.body.amount;
 
-    const splitAmount = amount.split('.');
-
-    const joinedAmount = splitAmount.join('');
+    const pennyAmount = amount * 100;
 
     const paymentIntent = await stripe(secretKey).paymentIntents.create({
-      amount: joinedAmount,
+      amount: pennyAmount,
       currency: 'usd',
     });
 

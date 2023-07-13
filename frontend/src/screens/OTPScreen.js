@@ -20,6 +20,7 @@ export default function OTPScreen() {
         const { data } = await axios.get(`/api/users/email/${jwt}`);
         setEmail(data.email);
       } catch (err) {
+        toast.error(getError(err));
         //console.log(err);
       }
     };

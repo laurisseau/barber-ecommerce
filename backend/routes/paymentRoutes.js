@@ -4,6 +4,6 @@ import { isAuth } from '../utils.js';
 
 const paymentRouter = express.Router();
 
-paymentRouter.post('/create-payment-intent', isAuth, paymentIntent);
+paymentRouter.post('/create-payment-intent',  paymentIntent);//isAuth,
 
 export default paymentRouter;
