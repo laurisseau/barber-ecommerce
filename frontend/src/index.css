@@ -289,15 +289,27 @@ code {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 20%;
 }
 
-@media only screen and (min-width: 564px) and (max-width: 1000px) {
+@media only screen and (min-width: 1070px) {
   .admin-navbar-wrapper {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 30%;
+    width: 20%;
   }
+}
+
+.pagination-btn {
+  background: none;
+  color: inherit;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.pagination-btn-active {
+  border-bottom: 2px solid black;
 }

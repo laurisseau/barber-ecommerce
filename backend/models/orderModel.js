@@ -14,6 +14,8 @@ const orderSchema = new mongoose.Schema(
           ref: 'Product',
           required: true,
         },
+        isDelivered: { type: Boolean, default: false },
+        deliveredAt: { type: Boolean, default: false },
       },
     ],
     shippingAddress: {
@@ -43,8 +45,6 @@ const orderSchema = new mongoose.Schema(
 
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
-    isDelivered: { type: Boolean, default: false },
-    deliveredAt: { type: Boolean, default: false },
   },
   {
     timestamps: true,

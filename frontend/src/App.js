@@ -23,6 +23,7 @@ import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import { Store } from './Store';
 import DashboardScreen from './screens/DashboardScreen';
+import AdminOrderScreen from './screens/AdminOrderScreen';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ function App() {
             <main>
               <Routes>
                 <Route path="/dashboard" element={<DashboardScreen />} />
+                <Route path="/dashboard/orders" element={<AdminOrderScreen />} />
               </Routes>
             </main>
           </div>

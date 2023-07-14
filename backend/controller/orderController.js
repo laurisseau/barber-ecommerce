@@ -38,3 +38,34 @@ export const myOrder = expressAsyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user.sub });
   res.send(orders);
 });
+
+export const allOrders = expressAsyncHandler(async (req, res) => {
+  const orders = await Order.find();
+  res.send(orders);
+});
+
+export const updateDeliverey = expressAsyncHandler(async (req, res) => {
+  const { id } = req.body;
+
+  const order = await Order.findById(id);
+
+  if (order) {
+    const orderItemToUpdate = order.orderItems.find(
+      (item) => item.name === req.body.orderItemName
+    );
+
+    if (orderItemToUpdate) {
+      if (req.body.status === 'Delivered') {
+        orderItemToUpdate.isDelivered = true;
+      } else if(req.body.status === 'Undelivered') {
+        orderItemToUpdate.isDelivered = false;
+      }
+      await order.save();
+      res.send(order);
+    } else {
+      res.status(404).send({ message: 'No undelivered order items found.' });
+    }
+  } else {
+    res.status(404).send({ message: 'Order not found.' });
+  }
+});
