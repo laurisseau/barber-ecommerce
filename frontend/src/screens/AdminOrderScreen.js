@@ -30,13 +30,14 @@ export default function AdminOrderScreen() {
     );
   }
 
+
   const filteredData = (data) => {
     const filterArr = [];
-
+  
     if (data.length === 0) {
       return data;
     }
-
+  
     for (let j = 0; j <= data.length - 1; j++) {
       const orderData = data[j];
       for (let i = 0; i <= orderData.orderItems.length - 1; i++) {
@@ -64,6 +65,9 @@ export default function AdminOrderScreen() {
     return filterArr;
   };
 
+
+
+
   return (
     <Row>
       <Col className="" md={3} sm={4} xs={3}>
@@ -84,7 +88,6 @@ export default function AdminOrderScreen() {
           <TableComp
             title={`All Orders`}
             tableRows={tableRows}
-            rowsPerPage={5}
             search={true}
           />
         )}

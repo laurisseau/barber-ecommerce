@@ -24,6 +24,9 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import { Store } from './Store';
 import DashboardScreen from './screens/DashboardScreen';
 import AdminOrderScreen from './screens/AdminOrderScreen';
+import AdminCustomerScreen from './screens/AdminCustomerScreen';
+import AdminProductScreen from './screens/AdminProductScreen';
+import AdminCategoryScreen from './screens/AdminCategoryScreen';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +44,9 @@ function App() {
               <Routes>
                 <Route path="/dashboard" element={<DashboardScreen />} />
                 <Route path="/dashboard/orders" element={<AdminOrderScreen />} />
+                <Route path="/dashboard/products" element={<AdminProductScreen />} />
+                <Route path="/dashboard/categories" element={<AdminCategoryScreen />} />
+                <Route path="/dashboard/customers" element={<AdminCustomerScreen/>}/>
               </Routes>
             </main>
           </div>

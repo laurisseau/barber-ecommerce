@@ -9,6 +9,7 @@ import {
   updatedEmailVerification,
   forgotPassword,
   resetPassword,
+  allUsers
 } from '../controller/userController.js';
 
 const userRouter = express.Router();
@@ -28,6 +29,8 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
 
 userRouter.put('/profile', isAuth, updateProfile);
+
+userRouter.get('/allusers',  allUsers);//isAuth,
 
 // make pop up for auth expire
 

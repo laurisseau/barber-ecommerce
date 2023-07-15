@@ -7,7 +7,7 @@ import expressAsyncHandler from 'express-async-handler';
 import { generateToken, decode } from '../utils.js';
 import pkg from 'aws-sdk';
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
-import { errorController} from './errorController.js' 
+import { errorController } from './errorController.js';
 
 const { CognitoIdentityServiceProvider } = pkg;
 
@@ -70,8 +70,8 @@ export const signup = expressAsyncHandler(async (req, res) => {
     null,
     (err, result) => {
       if (err) {
-        errorController(err, req, res)
-        return
+        errorController(err, req, res);
+        return;
       }
       const cognitoUser = result.user;
       const user = cognitoUser.getUsername();
@@ -152,7 +152,7 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
   cognito.updateUserAttributes(params, (err, data) => {
     if (err) {
       //console.error('Failed to update user attributes:', err);
-      res.status(404).json({message: 'Failed to update user attributes'});
+      res.status(404).json({ message: 'Failed to update user attributes' });
     } else {
       //console.log('User attributes updated successfully:', data);
       res.send({ email: req.body.email, username: req.body.username });
@@ -208,7 +208,52 @@ export const resetPassword = expressAsyncHandler(async (req, res) => {
       res.send('Password reset confirmed successfully');
     },
     onFailure: (err) => {
-      errorController(err, req, res)
+      errorController(err, req, res);
     },
   });
+});
+
+export const allUsers = expressAsyncHandler(async (req, res) => {
+  const cognitoAllUsersConfig = new CognitoIdentityServiceProvider({
+    region: 'us-east-1', // Replace with your desired region
+    accessKeyId: process.env.AWS_ACCESS_KEY, // Replace with the IAM user's Access Key ID
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // Replace with the IAM user's Secret Access Key
+  });
+
+  const userPoolId = process.env.USER_POOL_ID; // Replace with your user pool ID
+
+  const params = {
+    UserPoolId: userPoolId,
+    AttributesToGet: ['email', 'preferred_username', 'custom:role','sub'], // Optionally specify the attributes you want to retrieve for each user
+  };
+
+  const response = await cognitoAllUsersConfig.listUsers(params).promise();
+
+  const users = response.Users;
+
+  const usersLength = users.length - 1;
+
+  let userObj = {};
+
+  const userArr = [];
+
+  for (let i = 0; i <= usersLength; i++) {
+    const attributes = response.Users[i].Attributes;
+    const attributeLength = attributes.length - 1;
+
+    for (let j = 0; j <= attributeLength; j++) {
+      let useyObjKey = attributes[j].Name;
+      if (useyObjKey.startsWith('custom:')) {
+        useyObjKey = useyObjKey.replace('custom:', '');
+      }
+      const useyObjValue = attributes[j].Value;
+      userObj[useyObjKey] = useyObjValue;
+    }
+
+    userArr.push(userObj);
+
+    userObj = {};
+  }
+
+  res.send(userArr);
 });

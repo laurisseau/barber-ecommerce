@@ -4,7 +4,13 @@ import Card from 'react-bootstrap/Card';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-export default function TableComp({ title, tableRows, data, search, rowsPerPage }) {
+export default function TableComp({
+  title,
+  tableRows,
+  data,
+  search,
+  rowsPerPage,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -12,7 +18,7 @@ export default function TableComp({ title, tableRows, data, search, rowsPerPage 
     setSearchTerm(event.target.value);
     setCurrentPage(1);
   };
-  
+
   // how data is filterd to search
   const filterData = () => {
     return data.filter((tableData) =>
@@ -190,7 +196,7 @@ export default function TableComp({ title, tableRows, data, search, rowsPerPage 
                   onClick={() => {
                     openModalToNotDeliver(data);
                   }}
-                  className="p-2"
+                  className="p-2 pointer"
                   pill
                 >
                   {data[tableRows[i]]}
@@ -201,7 +207,7 @@ export default function TableComp({ title, tableRows, data, search, rowsPerPage 
                   onClick={() => {
                     openModalToDeliver(data);
                   }}
-                  className="p-2"
+                  className="p-2 pointer"
                   pill
                 >
                   {data[tableRows[i]]}
@@ -210,7 +216,7 @@ export default function TableComp({ title, tableRows, data, search, rowsPerPage 
             </div>
           </td>
         );
-      } else if (data.Photo && tableRows[i] === 'Photo') {
+      } else if (data.image && tableRows[i] === 'image') {
         tableCells.push(
           <td key={i}>
             <div className="d-flex justify-content-center align-items-center">
