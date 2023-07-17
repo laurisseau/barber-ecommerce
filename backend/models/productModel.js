@@ -38,12 +38,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     rating: {
-      type: Number,
-      required: true,
+      type: Number
     },
     numReviews: {
       type: Number,
-      required: true,
     },
   },
   {

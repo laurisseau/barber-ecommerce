@@ -27,6 +27,7 @@ import AdminOrderScreen from './screens/AdminOrderScreen';
 import AdminCustomerScreen from './screens/AdminCustomerScreen';
 import AdminProductScreen from './screens/AdminProductScreen';
 import AdminCategoryScreen from './screens/AdminCategoryScreen';
+import AdminAddProductsScreen from './screens/AdminAddProductsScreen'
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/dashboard/products" element={<AdminProductScreen />} />
                 <Route path="/dashboard/categories" element={<AdminCategoryScreen />} />
                 <Route path="/dashboard/customers" element={<AdminCustomerScreen/>}/>
+                <Route path="/dashboard/products/add" element={<AdminAddProductsScreen />}/>
               </Routes>
             </main>
           </div>

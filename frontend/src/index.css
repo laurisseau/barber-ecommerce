@@ -317,3 +317,33 @@ code {
 .pointer:hover {
   cursor: pointer;
 }
+
+
+.product-responsitivity{
+  justify-content: space-around;
+}
+
+.product-add-search-responsitivity{
+  width: none;
+}
+
+@media only screen and (max-width: 740px) {
+  .product-responsitivity{
+    justify-content: center;
+  }
+
+  .product-utils-responsitivity{
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .product-add-btn-responsitivity{
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .product-add-search-responsitivity{
+    width: 100%;
+  }
+
+}

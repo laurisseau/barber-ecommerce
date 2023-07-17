@@ -7,7 +7,7 @@ import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
 
 export default function AdminCategoryScreen() {
-    const tableRows = ['_id', 'image', 'name', 'slug'];
+    const tableRows = ['_id', 'image', 'name', 'slug', 'edit'];
   
     const { isLoading: isLoadingCategoryData, data: categoryData } = useQuery(
       'categoryData',
@@ -41,6 +41,7 @@ export default function AdminCategoryScreen() {
           image: categoryData.image,
           name: categoryData.name,
           slug: categoryData.slug,
+          edit: 'Remove'
         });
     
       }
