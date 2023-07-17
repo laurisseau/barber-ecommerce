@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
-import Swal from 'sweetalert2';
 import axios from 'axios';
+import { useQueryClient, useMutation } from 'react-query';
+import { OptionModal } from '../components/OptionModal.js';
 
 export default function TableComp({
   title,
@@ -82,106 +83,46 @@ export default function TableComp({
   const updateItemDeliverey = async (text, data) => {
     if (text === 'Delivered') {
       try {
-        const { updatedOrder } = await axios.put(
-          '/api/orders/updateDeliverey',
-          {
-            id: data.Order_Id,
-            orderItemName: data.Product_Name,
-            status: text,
-          }
-        );
-        window.location.reload();
+        await axios.put('/api/orders/updateDeliverey', {
+          id: data.Order_Id,
+          orderItemName: data.Product_Name,
+          status: text,
+        });
       } catch (err) {
         console.log(err);
       }
     } else {
       try {
-        const { updatedOrder } = await axios.put(
-          '/api/orders/updateDeliverey',
-          {
-            id: data.Order_Id,
-            orderItemName: data.Product_Name,
-            status: text,
-          }
-        );
-        window.location.reload();
+        await axios.put('/api/orders/updateDeliverey', {
+          id: data.Order_Id,
+          orderItemName: data.Product_Name,
+          status: text,
+        });
       } catch (err) {
         console.log(err);
       }
     }
   };
 
-  const openModalToDeliver = (data) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: ' me-3 btn btn-danger',
+  const queryClient = useQueryClient();
+
+  const updateItemToNotDeliveredMutation = useMutation(
+    (data) => updateItemDeliverey('Undelivered', data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('orders');
       },
-      buttonsStyling: false,
-    });
+    }
+  );
 
-    swalWithBootstrapButtons
-      .fire({
-        text: 'Did you deliver this item ?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: 'Item delivered',
-            text: 'This customer now knows that their item is delivered.',
-            icon: 'success',
-          });
-          updateItemDeliverey('Delivered', data);
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'This customer still knows that their item is not delivered.',
-            'error'
-          );
-        }
-      });
-  };
-
-  const openModalToNotDeliver = (data) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: ' me-3 btn btn-danger',
+  const updateItemToDeliveredMutation = useMutation(
+    (data) => updateItemDeliverey('Delivered', data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('orders');
       },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        text: 'Are you sure you want to undeliver this item ?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: 'Item Undelivered',
-            text: 'This customer now knows that their item is undelivered.',
-            icon: 'success',
-          });
-          updateItemDeliverey('Undelivered', data);
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'This customer still knows that their item is not delivered.',
-            'error'
-          );
-        }
-      });
-  };
+    }
+  );
 
   function tableDataLoop(data) {
     const tableCells = [];
@@ -194,7 +135,13 @@ export default function TableComp({
                 <Badge
                   bg="success"
                   onClick={() => {
-                    openModalToNotDeliver(data);
+                    OptionModal(
+                      updateItemToNotDeliveredMutation,
+                      data,
+                      'Are you sure you want to undeliver this item ?',
+                      'This customer now knows that their item is undelivered.',
+                      'This customer still knows that their item is not delivered.'
+                    );
                   }}
                   className="p-2 pointer"
                   pill
@@ -205,7 +152,13 @@ export default function TableComp({
                 <Badge
                   bg="danger"
                   onClick={() => {
-                    openModalToDeliver(data);
+                    OptionModal(
+                      updateItemToDeliveredMutation,
+                      data,
+                      'Are you sure you want to deliver this item ?',
+                      'This customer now knows that their item is delivered.',
+                      'This customer still knows that their item is delivered.'
+                    )
                   }}
                   className="p-2 pointer"
                   pill

@@ -1,22 +1,19 @@
 import AdminNavbar from '../components/AdminNavbar.js';
-import Rating from '../components/Rating.js';
+import { useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axios from 'axios';
-//import LoadingBox from '../components/LoadingBox';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/esm/Button.js';
-//import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
 export default function AdminAddProductsScreen() {
-  const { isLoading: isLoadingCategoryData, data: categoryData } = useQuery(
-    'categoryData',
-    async () => {
-      return await axios.get('/api/categories/');
-    }
-  );
+  const navigate = useNavigate();
+
+  const { data: categoryData } = useQuery('categoryData', async () => {
+    return await axios.get('/api/categories/');
+  });
 
   const [category, setCategory] = useState('');
 
@@ -40,19 +37,6 @@ export default function AdminAddProductsScreen() {
     const sanitizedValue = newValue.replace(/[^0-9.]/g, '');
     setPrice(sanitizedValue);
   };
-
-  /*
-  console.log({
-    slug: slug,
-    category: category,
-    productName: productName,
-    brand: brand,
-    price: price,
-    countInStock: countInStock,
-    description: description,
-    image: image,
-  });
-*/
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -79,8 +63,7 @@ export default function AdminAddProductsScreen() {
       );
 
       if (data) {
-        console.log(data);
-        //navigate("/dashboard/products");
+        navigate('/dashboard/products');
       }
     } catch (err) {
       //toast.error(getError(err));
@@ -197,7 +180,9 @@ export default function AdminAddProductsScreen() {
                 <Form.Label>Image</Form.Label>
                 <Form.Control
                   type="file"
-                  onChange={(e) => setImage(e.target.value)}
+                  onChange={(e) => {
+                    setImage(e.target.files[0]);
+                  }}
                   required
                 />
               </Form.Group>
@@ -226,16 +211,3 @@ export default function AdminAddProductsScreen() {
     </Row>
   );
 }
-
-/*
-
-
-
-
-
-
-
-
-
-
-*/

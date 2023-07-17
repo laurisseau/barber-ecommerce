@@ -9,8 +9,19 @@ import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import Button from 'react-bootstrap/esm/Button.js';
 import { Link } from 'react-router-dom';
+//import Swal from 'sweetalert2';
+import {OptionModal} from '../components/OptionModal.js';
+import { useQueryClient, useMutation } from 'react-query';
 
 export default function AdminProductScreen() {
+  const queryClient = useQueryClient();
+
+  const deleteProduct = useMutation((data) => deleteHandler(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('productData');
+    },
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const rowsPerPage = 8;
@@ -29,6 +40,14 @@ export default function AdminProductScreen() {
       </div>
     );
   }
+
+  const deleteHandler = async (id) => {
+    try {
+      await axios.delete(`/api/products/deleteProduct/${id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -138,13 +157,17 @@ export default function AdminProductScreen() {
         <div className="d-flex  flex-wrap product-responsitivity pe-3  ">
           {productData && productData.data ? (
             currentData.map((data, index) => (
-              <Card className="shadow mt-4  mb-3 " style={{ width: '223px' }}>
-                <Link to="/dashboard/products">
+              <Card
+                className="shadow mt-4  mb-3 "
+                key={index}
+                style={{ width: '223px' }}
+              >
+                <Link to={`/dashboard/productDetail/${data._id}`}>
                   <img
                     src={data.image}
                     className=""
                     alt="img"
-                    style={{ height: '223px' }}
+                    style={{ height: '223px', width: '100%' }}
                   />
                 </Link>
                 <div className="p-2">
@@ -162,7 +185,19 @@ export default function AdminProductScreen() {
                   <div className="">
                     <Rating rating={3} numReviews={12} />
                   </div>
-                  <Button variant="danger" className="w-100 mt-2">
+                  <Button
+                    variant="danger"
+                    className="w-100 mt-2"
+                    onClick={() => {
+                      OptionModal(
+                        deleteProduct,
+                        data._id,
+                        'Are you sure you want to delete this product?',
+                        'This product has been deleted.',
+                        'This product has not been deleted.'
+                      );
+                    }}
+                  >
                     Remove
                   </Button>
                 </div>
