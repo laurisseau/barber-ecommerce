@@ -48,7 +48,7 @@ export default function AdminCategoryScreen() {
   
       return filterArr;
     };
-  
+  // add add bar
     return (
       <Row>
         <Col className="" md={3} sm={4} xs={3}>
