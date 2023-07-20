@@ -70,6 +70,29 @@ export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   next();
 });
 
+export const resizeUpdatedUserPhoto = expressAsyncHandler(
+  async (req, res, next) => {
+    if (!req.file) return next();
+
+    const product = await Product.findById(req.params.id);
+
+    const buffer = await sharp(req.file.buffer).resize(300, 300).toBuffer();
+
+    const params = {
+      Bucket: bucketName,
+      Key: product.image,
+      Body: buffer,
+      ContentType: req.file.mimetype,
+    };
+
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    next();
+  }
+);
+
 export const CreatProduct = expressAsyncHandler(async (req, res) => {
   const product = await Product.create({
     slug: req.body.slug,
@@ -141,15 +164,24 @@ export const getAllProducts = expressAsyncHandler(async (req, res) => {
 });
 
 export const updateProductById = expressAsyncHandler(async (req, res) => {
+  const image = () => {
+    const awsS3Url = req.body.image;
+    const objectKey = awsS3Url.substring(
+      awsS3Url.lastIndexOf('/') + 1,
+      awsS3Url.indexOf('?')
+    );
+    return objectKey;
+  };
+
   const updateProductById = await Product.findByIdAndUpdate(req.params.id, {
     slug: req.body.slug,
     name: req.body.name,
     brand: req.body.brand,
     price: req.body.price,
     countInStock: req.body.countInStock,
-    image: req.file.filename,
+    image: req.file ? req.file.filename : image(),
     description: req.body.description,
   });
-  /// need to use aws update images
+
   res.send(updateProductById);
 });

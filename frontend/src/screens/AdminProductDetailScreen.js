@@ -1,4 +1,4 @@
-import { useParams , useNavigate} from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -206,13 +206,14 @@ export default function AdminProductDetailScreen() {
                   value={seeProduct.countInStock}
                   onChange={(e) =>
                     setSeeProduct({
-                      slug: e.target.value,
+                      slug: seeProduct.slug,
                       name: seeProduct.name,
                       brand: seeProduct.brand,
                       price: seeProduct.price,
                       countInStock: e.target.value,
                       image: seeProduct.image,
                       description: seeProduct.description,
+                      category: seeProduct.category,
                     })
                   }
                   required
@@ -226,7 +227,7 @@ export default function AdminProductDetailScreen() {
                   aria-label="Default select example"
                   onChange={(e) =>
                     setSeeProduct({
-                      slug: e.target.value,
+                      slug: seeProduct.slug,
                       name: seeProduct.name,
                       brand: seeProduct.brand,
                       price: seeProduct.price,

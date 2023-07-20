@@ -4,6 +4,7 @@ import {
   deleteProductById,
   uploadUserPhoto,
   resizeUserPhoto,
+  resizeUpdatedUserPhoto,
   CreatProduct,
   getAllProducts,
   getProductId,
@@ -28,7 +29,7 @@ productRouter.delete('/deleteProduct/:id', deleteProductById); //admin
 productRouter.put(
   '/updateProduct/:id',
   uploadUserPhoto,
-  resizeUserPhoto,
+  resizeUpdatedUserPhoto,
   updateProductById
 ); //admin
 
