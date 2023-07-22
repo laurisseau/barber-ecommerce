@@ -64,14 +64,17 @@ export default function AdminCategoryScreen() {
               data={filteredData(categoryData.data)}
               rowsPerPage={5}
               search={true}
+              addBar={'true'}
             />
           ) : (
             <TableComp
               title={`All Categories`}
               tableRows={tableRows}
               search={true}
+              addBar={'true'}
             />
           )}
+         
         </Col>
       </Row>
     );

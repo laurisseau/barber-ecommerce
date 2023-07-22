@@ -347,3 +347,9 @@ code {
   }
 
 }
+
+.add-hover:hover{
+  cursor: pointer;
+  background-color: #e9eaea;
+  transition: .5s;
+}

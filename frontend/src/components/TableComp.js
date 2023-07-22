@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import { useQueryClient, useMutation } from 'react-query';
 import { OptionModal } from '../components/OptionModal.js';
+import CenterModal from './CenterModal.js';
 
 export default function TableComp({
   title,
@@ -11,9 +12,11 @@ export default function TableComp({
   data,
   search,
   rowsPerPage,
+  addBar,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [modalShow, setModalShow] = useState(false);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -158,7 +161,7 @@ export default function TableComp({
                       'Are you sure you want to deliver this item ?',
                       'This customer now knows that their item is delivered.',
                       'This customer still knows that their item is delivered.'
-                    )
+                    );
                   }}
                   className="p-2 pointer"
                   pill
@@ -241,6 +244,19 @@ export default function TableComp({
             ))}
           </tbody>
         </table>
+        {addBar === 'true' ? (
+          <div>
+            <div
+              className="text-center pt-1 add-hover"
+              onClick={() => setModalShow(true)}
+            >
+              <span className="material-symbols-outlined fs-2">add</span>
+            </div>
+            <CenterModal show={modalShow} onHide={() => setModalShow(false)} />
+          </div>
+        ) : (
+          <div></div>
+        )}
       </Card>
       {renderPaginationControls()}
     </div>

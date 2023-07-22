@@ -2,10 +2,7 @@ import Category from '../models/categoryModel.js';
 import Product from '../models/productModel.js';
 import expressAsyncHandler from 'express-async-handler';
 import dotenv from 'dotenv';
-import {
-  S3Client,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 dotenv.config({ path: 'config.env' });
@@ -23,15 +20,38 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-
 export const getCategories = expressAsyncHandler(async (req, res) => {
   const categories = await Category.find();
+
+  for (const category of categories) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: category.image,
+    };
+
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 30 });
+
+    category.image = url;
+  }
+
+
   res.send(categories);
+});
+
+export const createCategory = expressAsyncHandler(async (req, res) => {
+  
+  const category = await Category.create({
+    name: req.body.name,
+    slug: req.body.slug,
+    image: req.file.filename,
+  });
+
+  res.send(category);
 });
 
 export const getProductFromCategory = expressAsyncHandler(async (req, res) => {
   const findProducts = await Product.find({ category: req.params.slug });
-
 
   for (const product of findProducts) {
     const getObjectParams = {
