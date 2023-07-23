@@ -4,12 +4,13 @@ import {
   deleteProductById,
   uploadUserPhoto,
   resizeUserPhoto,
-  resizeUpdatedUserPhoto,
+  resizeUpdatedUserPhotoWithDB,
   CreatProduct,
   getAllProducts,
   getProductId,
   getProductSlug,
 } from '../controller/productController.js';
+import Product from '../models/productModel.js';
 
 const productRouter = express.Router();
 
@@ -29,7 +30,7 @@ productRouter.delete('/deleteProduct/:id', deleteProductById); //admin
 productRouter.put(
   '/updateProduct/:id',
   uploadUserPhoto,
-  resizeUpdatedUserPhoto,
+  resizeUpdatedUserPhotoWithDB(Product),
   updateProductById
 ); //admin
 

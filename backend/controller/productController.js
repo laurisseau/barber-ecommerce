@@ -70,11 +70,11 @@ export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   next();
 });
 
-export const resizeUpdatedUserPhoto = expressAsyncHandler(
-  async (req, res, next) => {
+export const resizeUpdatedUserPhotoWithDB = (db) => {
+  return expressAsyncHandler(async (req, res, next) => {
     if (!req.file) return next();
 
-    const product = await Product.findById(req.params.id);
+    const product = await db.findById(req.params.id);
 
     const buffer = await sharp(req.file.buffer).resize(300, 300).toBuffer();
 
@@ -90,8 +90,8 @@ export const resizeUpdatedUserPhoto = expressAsyncHandler(
     await s3.send(command);
 
     next();
-  }
-);
+  });
+};
 
 export const CreatProduct = expressAsyncHandler(async (req, res) => {
   const product = await Product.create({

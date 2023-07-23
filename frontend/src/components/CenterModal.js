@@ -1,68 +1,55 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
-import axios from 'axios';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { useEffect } from 'react';
 
 export default function CenterModal(props) {
-  const navigate = useNavigate();
-  const [slug, setSlug] = useState('');
-  const [categoryName, setCategoryName] = useState('');
-  const [image, setImage] = useState('');
+  const {
+    categoryid,
+    categoryimage,
+    categoryname,
+    categoryslug,
+    editcategory,
+    ...modalProps
+  } = props;
 
-  const submitHandler = async (e) => {
-    //e.preventDefault();
+  const [slug, setSlug] = useState(categoryslug);
+  const [categoryName, setCategoryName] = useState(categoryname);
+  const [image, setImage] = useState(categoryimage);
+  const [id, setId] = useState(categoryid);
 
-    try {
-      //setIsCreating(true);
-      const formData = new FormData();
-
-      formData.append('name', categoryName);
-      formData.append('slug', slug);
-      formData.append('image', image);
-
-      const data = await axios.post(
-        '/api/categories/createCategory',
-        formData
-        //, {
-        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
-        //}
-      );
-
-      if (data) {
-        navigate('/dashboard/categories');
-      }
-    } catch (err) {
-      //toast.error(getError(err));
-      console.log(err);
-      //setIsCreating(false);
-    }
-  };
+  useEffect(() => {
+    setSlug(categoryslug);
+    setCategoryName(categoryname);
+    setImage(categoryimage);
+    setId(categoryid);
+  }, [categoryslug, categoryname, categoryimage, categoryid]);
 
   return (
     <Modal
-      {...props}
+      {...modalProps}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Add Category
+          {props.tabletitle}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Row>
             <Col lg={6} md={6} sm={12}>
-              <Form.Group className="mb-3" controlId="product-name">
+              <Form.Group className="mb-3" controlId="category-name">
                 <Form.Label>Category Name</Form.Label>
                 <Form.Control
-                  type="product-name"
-                  placeholder="Example: Mens Shoes "
+                  type="category-name"
+                  placeholder="Example: Mens Shoes"
+                  value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
                   required
                 />
@@ -74,6 +61,7 @@ export default function CenterModal(props) {
                 <Form.Label>Slug</Form.Label>
                 <Form.Control
                   type="slug"
+                  value={slug}
                   placeholder="Example: Mens-Shoes"
                   onKeyPress={(e) =>
                     e.key === ' ' ? e.preventDefault() : e.key
@@ -92,16 +80,28 @@ export default function CenterModal(props) {
                   onChange={(e) => {
                     setImage(e.target.files[0]);
                   }}
-                  required
+                  required={'' ? false : true}
                 />
               </Form.Group>
             </Col>
           </Row>
         </Form>
         <div className="mt-2 d-flex align-item-center justify-content-between">
-          <Button type="submit" onClick={submitHandler}>
-            Add Product
-          </Button>
+          {props.action === 'update' ? (
+            <Button
+              type="submit"
+              onClick={() => props.editcategory(categoryName, slug, image, id)}
+            >
+              {props.modalbutton}
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              onClick={() => props.createcategory(categoryName, slug, image)}
+            >
+              {props.modalbutton}
+            </Button>
+          )}
           <Button onClick={props.onHide}>Close</Button>
         </div>
       </Modal.Body>

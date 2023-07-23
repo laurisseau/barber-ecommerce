@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
-import axios from 'axios';
-import { useQueryClient, useMutation } from 'react-query';
-import { OptionModal } from '../components/OptionModal.js';
 import CenterModal from './CenterModal.js';
 
 export default function TableComp({
@@ -13,6 +9,9 @@ export default function TableComp({
   search,
   rowsPerPage,
   addBar,
+  tableTitle,
+  modalButton,
+  createcategory,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,126 +82,18 @@ export default function TableComp({
     );
   };
 
-  const updateItemDeliverey = async (text, data) => {
-    if (text === 'Delivered') {
-      try {
-        await axios.put('/api/orders/updateDeliverey', {
-          id: data.Order_Id,
-          orderItemName: data.Product_Name,
-          status: text,
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      try {
-        await axios.put('/api/orders/updateDeliverey', {
-          id: data.Order_Id,
-          orderItemName: data.Product_Name,
-          status: text,
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
-  const queryClient = useQueryClient();
-
-  const updateItemToNotDeliveredMutation = useMutation(
-    (data) => updateItemDeliverey('Undelivered', data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('orders');
-      },
-    }
-  );
-
-  const updateItemToDeliveredMutation = useMutation(
-    (data) => updateItemDeliverey('Delivered', data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('orders');
-      },
-    }
-  );
-
   function tableDataLoop(data) {
     const tableCells = [];
     for (let i = 0; i < tableRows.length; i++) {
-      if (data.Status && tableRows[i] === 'Status') {
-        tableCells.push(
-          <td key={i}>
-            <div className="p-3">
-              {data[tableRows[i]] === 'Delivered' ? (
-                <Badge
-                  bg="success"
-                  onClick={() => {
-                    OptionModal(
-                      updateItemToNotDeliveredMutation,
-                      data,
-                      'Are you sure you want to undeliver this item ?',
-                      'This customer now knows that their item is undelivered.',
-                      'This customer still knows that their item is not delivered.'
-                    );
-                  }}
-                  className="p-2 pointer"
-                  pill
-                >
-                  {data[tableRows[i]]}
-                </Badge>
-              ) : (
-                <Badge
-                  bg="danger"
-                  onClick={() => {
-                    OptionModal(
-                      updateItemToDeliveredMutation,
-                      data,
-                      'Are you sure you want to deliver this item ?',
-                      'This customer now knows that their item is delivered.',
-                      'This customer still knows that their item is delivered.'
-                    );
-                  }}
-                  className="p-2 pointer"
-                  pill
-                >
-                  {data[tableRows[i]]}
-                </Badge>
-              )}
-            </div>
-          </td>
-        );
-      } else if (data.image && tableRows[i] === 'image') {
-        tableCells.push(
-          <td key={i}>
-            <div className="d-flex justify-content-center align-items-center">
-              <img
-                src={data[tableRows[i]]}
-                alt=""
-                style={{ width: '45px', height: '45px' }}
-                className="rounded-circle"
-              />
-            </div>
-          </td>
-        );
-      } else if (data.Customer_Email && tableRows[i] === 'Customer_Name') {
-        tableCells.push(
-          <td key={i}>
-            <p className="fw-bold mb-1">{data[tableRows[i]]}</p>
-            <p className="text-muted mb-0">{data.Customer_Email}</p>
-          </td>
-        );
-      } else {
-        tableCells.push(
-          <td key={i}>
-            <p className="fw-normal p-3  mb-1">{data[tableRows[i]]}</p>
-          </td>
-        );
-      }
+      tableCells.push(
+        <td key={i}>
+          <div className="fw-normal p-3  mb-1">{data[tableRows[i]]}</div>
+        </td>
+      );
     }
-
     return tableCells;
   }
+
 
   return (
     <div className="pe-4 mt-3 mb-5">
@@ -252,7 +143,13 @@ export default function TableComp({
             >
               <span className="material-symbols-outlined fs-2">add</span>
             </div>
-            <CenterModal show={modalShow} onHide={() => setModalShow(false)} />
+            <CenterModal
+              show={modalShow}
+              modalButton={modalButton}
+              tableTitle={tableTitle}
+              onHide={() => setModalShow(false)}
+              createcategory={createcategory}
+            />
           </div>
         ) : (
           <div></div>
