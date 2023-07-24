@@ -1,10 +1,11 @@
 import express from 'express';
 import {
   createCategory,
+  deleteCategoryById,
   getCategories,
   getCategoryById,
   getProductFromCategory,
-  updateCategoryById
+  updateCategoryById,
 } from '../controller/categoryController.js';
 
 import {
@@ -23,7 +24,7 @@ categoryRouter.post(
   uploadUserPhoto,
   resizeUserPhoto,
   createCategory
-);//admin
+); //admin
 
 categoryRouter.put(
   '/updateCategory/:id',
@@ -32,10 +33,9 @@ categoryRouter.put(
   updateCategoryById
 ); //admin
 
-categoryRouter.get(
-  '/category/:id',
-  getCategoryById
-); //admin
+categoryRouter.delete('/deleteCategory/:id', deleteCategoryById); //admin
+
+categoryRouter.get('/category/:id', getCategoryById); //admin
 
 categoryRouter.get('/:slug', getProductFromCategory);
 

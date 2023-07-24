@@ -2,7 +2,11 @@ import Category from '../models/categoryModel.js';
 import Product from '../models/productModel.js';
 import expressAsyncHandler from 'express-async-handler';
 import dotenv from 'dotenv';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 dotenv.config({ path: 'config.env' });
@@ -44,6 +48,16 @@ export const createCategory = expressAsyncHandler(async (req, res) => {
     slug: req.body.slug,
     image: req.file.filename,
   });
+
+  const getObjectParams = {
+    Bucket: bucketName,
+    Key: category.image,
+  };
+
+  const command = new GetObjectCommand(getObjectParams);
+  const url = await getSignedUrl(s3, command, { expiresIn: 30 });
+
+  category.image = url;
 
   res.send(category);
 });
@@ -112,4 +126,19 @@ export const getProductFromCategory = expressAsyncHandler(async (req, res) => {
   }
 
   res.send(findProducts);
+});
+
+export const deleteCategoryById = expressAsyncHandler(async (req, res) => {
+  const deleteCategoryById = await Category.findByIdAndRemove(req.params.id);
+
+  const params = {
+    Bucket: bucketName,
+    Key: deleteCategoryById.image,
+  };
+
+  const command = new DeleteObjectCommand(params);
+
+  await s3.send(command);
+
+  res.send(deleteCategoryById);
 });

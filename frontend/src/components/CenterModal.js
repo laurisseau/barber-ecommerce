@@ -13,19 +13,21 @@ export default function CenterModal(props) {
     categoryname,
     categoryslug,
     editcategory,
+    createcategory,
+    deletecategory,
     ...modalProps
   } = props;
 
-  const [slug, setSlug] = useState(categoryslug);
-  const [categoryName, setCategoryName] = useState(categoryname);
-  const [image, setImage] = useState(categoryimage);
-  const [id, setId] = useState(categoryid);
+  const [slug, setSlug] = useState(categoryslug || '');
+  const [categoryName, setCategoryName] = useState(categoryname || '');
+  const [image, setImage] = useState(categoryimage || '');
+  const [id, setId] = useState(categoryid || '');
 
   useEffect(() => {
-    setSlug(categoryslug);
-    setCategoryName(categoryname);
-    setImage(categoryimage);
-    setId(categoryid);
+    setSlug(categoryslug || '');
+    setCategoryName(categoryname || '');
+    setImage(categoryimage || '');
+    setId(categoryid || '');
   }, [categoryslug, categoryname, categoryimage, categoryid]);
 
   return (
@@ -88,12 +90,24 @@ export default function CenterModal(props) {
         </Form>
         <div className="mt-2 d-flex align-item-center justify-content-between">
           {props.action === 'update' ? (
-            <Button
-              type="submit"
-              onClick={() => props.editcategory(categoryName, slug, image, id)}
-            >
-              {props.modalbutton}
-            </Button>
+            <div>
+              <Button
+                type="submit"
+                onClick={() =>
+                  props.editcategory(categoryName, slug, image, id)
+                }
+              >
+                {props.modalbutton}
+              </Button>
+              <Button
+                variant="danger"
+                className="ms-4"
+                type="submit"
+                onClick={() => props.deletecategory(id)}
+              >
+                Delete
+              </Button>
+            </div>
           ) : (
             <Button
               type="submit"

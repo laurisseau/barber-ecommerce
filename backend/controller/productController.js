@@ -178,6 +178,7 @@ export const updateProductById = expressAsyncHandler(async (req, res) => {
     name: req.body.name,
     brand: req.body.brand,
     price: req.body.price,
+    category: req.body.category,
     countInStock: req.body.countInStock,
     image: req.file ? req.file.filename : image(),
     description: req.body.description,

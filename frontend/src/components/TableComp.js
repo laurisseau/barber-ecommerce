@@ -9,8 +9,8 @@ export default function TableComp({
   search,
   rowsPerPage,
   addBar,
-  tableTitle,
-  modalButton,
+  tabletitle,
+  modalbutton,
   createcategory,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,8 +145,8 @@ export default function TableComp({
             </div>
             <CenterModal
               show={modalShow}
-              modalButton={modalButton}
-              tableTitle={tableTitle}
+              modalbutton={modalbutton}
+              tabletitle={tabletitle}
               onHide={() => setModalShow(false)}
               createcategory={createcategory}
             />

@@ -45,6 +45,8 @@ export default function AdminProductDetailScreen() {
     fetchData();
   }, [id]);
 
+  //console.log(seeProduct)
+
   const [category, setCategory] = useState('');
 
   useEffect(() => {
@@ -242,8 +244,8 @@ export default function AdminProductDetailScreen() {
                 >
                   {category ? (
                     category.map((option, index) => (
-                      <option key={index} value={option.name}>
-                        {option.name}
+                      <option key={index} value={option.slug}>
+                        {option.slug}
                       </option>
                     ))
                   ) : (

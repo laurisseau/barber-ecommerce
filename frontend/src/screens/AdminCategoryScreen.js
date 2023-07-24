@@ -83,13 +83,12 @@ export default function AdminCategoryScreen() {
         //}
       );
 
-      setModalShow(false);
-
       const updatedData = categoryData.map((oldData) =>
         oldData._id === data._id ? data : oldData
       );
 
       setCategoryData(updatedData);
+      setModalShow(false);
     } catch (err) {
       toast.error(getError(err));
       console.log(err);
@@ -104,7 +103,7 @@ export default function AdminCategoryScreen() {
       formData.append('slug', slug);
       formData.append('image', image);
 
-      const data = await axios.post(
+      const { data } = await axios.post(
         '/api/categories/createCategory',
         formData
         //, {
@@ -112,7 +111,27 @@ export default function AdminCategoryScreen() {
         //}
       );
 
-      console.log(data);
+      setCategoryData([...categoryData, data]);
+      setModalShow(false);
+    } catch (err) {
+      toast.error(getError(err));
+      console.log(err);
+    }
+  };
+
+  const deleteCategory = async (id) => {
+    try {
+      const { data } = await axios.delete(
+        `/api/categories/deleteCategory/${id}`
+        //, {
+        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
+        //}
+      );
+
+      const updatedData = categoryData.filter((el) => el._id !== data._id);
+
+      setCategoryData(updatedData);
+      setModalShow(false);
     } catch (err) {
       toast.error(getError(err));
       console.log(err);
@@ -178,8 +197,8 @@ export default function AdminCategoryScreen() {
             rowsPerPage={5}
             search={true}
             addBar={'true'}
-            tableTitle={'Add Category'}
-            modalButton={'Add Category'}
+            tabletitle={'Add Category'}
+            modalbutton={'Add Category'}
             createcategory={createCategory}
             action={'create'}
           />
@@ -189,8 +208,8 @@ export default function AdminCategoryScreen() {
             tableRows={tableRows}
             search={true}
             addBar={'true'}
-            tableTitle={'Add Category'}
-            modalButton={'Add Category'}
+            tabletitle={'Add Category'}
+            modalbutton={'Add Category'}
             action={'create'}
           />
         )}
@@ -205,6 +224,7 @@ export default function AdminCategoryScreen() {
         modalbutton={'Edit Category'}
         onHide={() => setModalShow(false)}
         editcategory={editCategory}
+        deletecategory={deleteCategory}
         action={'update'}
       />
     </Row>
