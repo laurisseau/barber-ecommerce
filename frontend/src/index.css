@@ -27,7 +27,7 @@ code {
 
 .background-img {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url('https://images.unsplash.com/photo-1596728325488-58c87691e9af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1473&q=80');
+    url('https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1031&q=80');
   text-align: left;
   width: auto;
 }
@@ -82,20 +82,16 @@ code {
 
 .card-body {
   width: 100%;
-  height: 170px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .product-flex {
+  gap: 30px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.product-box {
-  width: 300px;
 }
 
 .overlay {
@@ -119,9 +115,6 @@ code {
   border-radius: 5px;
 }
 
-.category-box:hover {
-  border: 1px solid red;
-}
 
 .overlay:hover {
   opacity: 1;
@@ -134,18 +127,26 @@ code {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 100%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
 
 .custom-card {
-  border: 2px solid #e9eaea;
-  border-radius: 5px;
+  border: 1px solid #e9eaea;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding-bottom: 10px;
+  width: 250px;
+}
+
+.custom-card button {
   width: 100%;
 }
+
 .card-img {
-  width: 300px;
+  width: 100%;
   height: 100%;
 }
 
@@ -180,6 +181,7 @@ code {
     display: block;
   }
   .card-body {
+    height: 100%;
     width: 200px;
     display: block;
   }
@@ -191,7 +193,10 @@ code {
     border: 2px solid #e9eaea;
     border-radius: 5px;
     flex-direction: row-reverse;
+    width: 100%;
+    padding-bottom: 0px;
   }
+
   .card-img {
     width: 150px;
     height: 150px;
@@ -318,38 +323,36 @@ code {
   cursor: pointer;
 }
 
-
-.product-responsitivity{
+.product-responsitivity {
   justify-content: space-around;
 }
 
-.product-add-search-responsitivity{
+.product-add-search-responsitivity {
   width: none;
 }
 
 @media only screen and (max-width: 740px) {
-  .product-responsitivity{
+  .product-responsitivity {
     justify-content: center;
   }
 
-  .product-utils-responsitivity{
+  .product-utils-responsitivity {
     width: 100%;
     flex-wrap: wrap;
   }
 
-  .product-add-btn-responsitivity{
+  .product-add-btn-responsitivity {
     width: 100%;
     margin-bottom: 10px;
   }
 
-  .product-add-search-responsitivity{
+  .product-add-search-responsitivity {
     width: 100%;
   }
-
 }
 
-.add-hover:hover{
+.add-hover:hover {
   cursor: pointer;
   background-color: #e9eaea;
-  transition: .5s;
+  transition: 0.5s;
 }

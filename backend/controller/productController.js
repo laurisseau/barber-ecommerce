@@ -52,7 +52,7 @@ export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   const randomImageName = (bytes = 32) =>
     crypto.randomBytes(bytes).toString('hex');
 
-  const buffer = await sharp(req.file.buffer).resize(300, 300).toBuffer();
+  const buffer = await sharp(req.file.buffer).resize(500, 500).toBuffer();
 
   req.file.filename = randomImageName();
 
@@ -76,7 +76,7 @@ export const resizeUpdatedUserPhotoWithDB = (db) => {
 
     const product = await db.findById(req.params.id);
 
-    const buffer = await sharp(req.file.buffer).resize(300, 300).toBuffer();
+    const buffer = await sharp(req.file.buffer).resize(500, 500).toBuffer();
 
     const params = {
       Bucket: bucketName,
@@ -141,6 +141,16 @@ export const getProductId = expressAsyncHandler(async (req, res) => {
 
 export const getProductSlug = expressAsyncHandler(async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug });
+
+  const getObjectParams = {
+    Bucket: bucketName,
+    Key: product.image,
+  };
+
+  const command = new GetObjectCommand(getObjectParams);
+  const url = await getSignedUrl(s3, command, { expiresIn: 30 });
+
+  product.image = url;
 
   res.send(product);
 });

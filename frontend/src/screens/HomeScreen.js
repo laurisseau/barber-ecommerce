@@ -1,10 +1,10 @@
 import Container from 'react-bootstrap/Container';
-import { Link } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
+import { Link as ScrollLink, Element } from 'react-scroll';
 
 export default function HomeScreen() {
   const { isLoading, data } = useQuery('categories', async () => {
@@ -53,11 +53,17 @@ export default function HomeScreen() {
           fluid
         >
           <div className="ms-3">
-            <h1 style={{ fontSize: '60px', fontWeight: '700' }}>420 for All</h1>
+            <h1 style={{ fontSize: '60px', fontWeight: '700' }}>
+              Simply dummy text
+            </h1>
             <h4 className="mt-4 mb-5">New Deals Every Day</h4>
-            <Link to="/" className="header-btn">
+            <ScrollLink
+              to="section1"
+              smooth={true}
+              className="header-btn pointer"
+            >
               Shop Now
-            </Link>
+            </ScrollLink>
           </div>
         </Container>
       </header>
@@ -69,56 +75,62 @@ export default function HomeScreen() {
             style={{ height: '100%', width: '500px' }}
           >
             <h2 style={{ fontWeight: '700', fontSize: '40px' }}>
-              Save on Khalifa Kush, Love’s Oven, Bhang and Trekkers
+              Lorem Ipsum has been the industry's standard dummy text
             </h2>
             <p>Limited Time Florida Deals</p>
-            <h5 style={{ fontWeight: '450' }}>
-              Puff like a Rock Star with KK at just $40. Get Baked with Big
-              savings on Bhang and Love’s Oven Edibles. Explore a little further
-              with $15 Trekkers.
+            <h5 style={{ fontWeight: '450' }} className="mb-4">
+              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident, sunt in culpa qui officia deserunt mollit anim id est
+              laborum.
             </h5>
-            <button href="/" className="body-btn mt-4">
+            <ScrollLink
+              to="section1"
+              smooth={true}
+              className="body-btn pointer"
+            >
               Shop Now
-            </button>
+            </ScrollLink>
           </div>
 
           <img
             alt="hair product"
             className="responsive"
-            style={{ borderRadius: '100%', height: '350px', width: '400px' }}
-            src="https://images.unsplash.com/photo-1630082900894-edbd503588f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+            style={{ borderRadius: '100%', height: '350px', width: '360px' }}
+            src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
           ></img>
         </div>
 
-        <div className="text-center mb-5 " style={{ height: '500px' }}>
-          <h1 className="mb-5">Our Categories</h1>
+        <Element name="section1">
+          <div className="text-center mb-5 " style={{ height: '500px' }}>
+            <h1 className="mb-5">Our Categories</h1>
 
-          <Carousel
-            swipeable={true}
-            responsive={responsive}
-            infinite={true}
-            partialVisible={true}
-          >
-            {data ? (
-              data.data.map((category) => (
-                <div key={category._id}>
-                  <a href={`/${category.slug}`}>
-                    <img
-                      alt="category"
-                      src={category.image}
-                      className="category-box "
-                    ></img>
-                    <div className="overlay">
-                      <h2 className="projectedText">{category.slug}</h2>
-                    </div>
-                  </a>
-                </div>
-              ))
-            ) : (
-              <div></div>
-            )}
-          </Carousel>
-        </div>
+            <Carousel
+              swipeable={true}
+              responsive={responsive}
+              infinite={true}
+              partialVisible={true}
+            >
+              {data ? (
+                data.data.map((category) => (
+                  <div key={category._id}>
+                    <a href={`/${category.slug}`}>
+                      <img
+                        alt="category"
+                        src={category.image}
+                        className="category-box shadow"
+                      ></img>
+                      <div className="overlay">
+                        <h2 className="projectedText">{category.slug}</h2>
+                      </div>
+                    </a>
+                  </div>
+                ))
+              ) : (
+                <div></div>
+              )}
+            </Carousel>
+          </div>
+        </Element>
       </Container>
     </>
   );

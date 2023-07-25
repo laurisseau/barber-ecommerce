@@ -10,6 +10,7 @@ import Container from 'react-bootstrap/esm/Container';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
+import Rating from '../components/Rating.js';
 
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -72,16 +73,25 @@ export default function ProductScreen() {
                 <h1>{data.data.name}</h1>
               </div>
 
-              <div className="d-flex border-bottom mb-4 pb-2 mt-4">
+
+
+              <div className="d-flex   mt-4">
                 <h2 style={{ fontWeight: '400' }}>
                   Price : ${data.data.price}
                 </h2>
+
                 {data.data.countInStock > 0 ? (
                   <Badge bg="success pt-2 ms-4 mt-2 mb-2">In Stock</Badge>
                 ) : (
                   <Badge bg="danger pt-2 ms-4 mt-2 mb-2">Unavailable</Badge>
                 )}
               </div>
+
+              <div className='border-bottom mb-4 pb-2 mt-3'>
+              <Rating rating={3} numReviews={12} />
+              </div>
+
+
 
               {data.data.countInStock > 0 && (
                 <div>

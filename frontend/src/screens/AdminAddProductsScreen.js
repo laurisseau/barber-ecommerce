@@ -19,7 +19,7 @@ export default function AdminAddProductsScreen() {
 
   useEffect(() => {
     if (categoryData && categoryData.data && categoryData.data.length > 0) {
-      setCategory(categoryData.data[0].name);
+      setCategory(categoryData.data[0].slug);
     }
   }, [categoryData]);
 
@@ -162,8 +162,8 @@ export default function AdminAddProductsScreen() {
                 >
                   {categoryData && categoryData.data ? (
                     categoryData.data.map((option, index) => (
-                      <option key={index} value={option.name}>
-                        {option.name}
+                      <option key={index} value={option.slug}>
+                        {option.slug}
                       </option>
                     ))
                   ) : (

@@ -9,7 +9,6 @@ import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import Button from 'react-bootstrap/esm/Button.js';
 import { Link } from 'react-router-dom';
-//import Swal from 'sweetalert2';
 import {OptionModal} from '../components/OptionModal.js';
 import { useQueryClient, useMutation } from 'react-query';
 
