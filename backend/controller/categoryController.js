@@ -63,7 +63,7 @@ export const createCategory = expressAsyncHandler(async (req, res) => {
 });
 
 export const updateCategoryById = expressAsyncHandler(async (req, res) => {
-  console.log(req.body);
+
   const image = () => {
     const awsS3Url = req.body.image;
     const objectKey = awsS3Url.substring(
