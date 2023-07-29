@@ -35,6 +35,7 @@ export default function DashboardScreen() {
     'Saturday',
   ];
 
+  const [chartType, setChartType] = useState('');
   const [chartData, setChartData] = useState({
     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
     datasets: [
@@ -153,32 +154,73 @@ export default function DashboardScreen() {
     return dataArr;
   };
 
-  console.log(arr);
+  //console.log(arr);
 
-  //const date = new Date();
-  const date = new Date('2023-07-25');
-  const chartWeekArr = [];
-  let dayNumber = date.getDay() + 1;
-  let remainder = 6 - dayNumber
-  //console.log(dayNumber)
-  //console.log(remainder)
+  const chartWeekLabel = () => {
+    const date = new Date();
+    const chartWeekArr = [];
+    let dayNumber = date.getDay();
+    let remainder = 6 - dayNumber;
 
-  for (let i = 0; i < dayNumber; i++) {
-    //console.log(daysOfWeek[i])
-    console.log(i)
-
+    for (dayNumber; dayNumber >= 0; dayNumber--) {
+      chartWeekArr.push(daysOfWeek[dayNumber]);
     }
 
-    for (let i = 0; 0 <= 6; i++) {
-      //console.log(daysOfWeek[remainder], 'r')
-      console.log(i)
-  
+    const startNum = 6 - remainder;
+
+    for (let i = 6; i > startNum; i--) {
+      chartWeekArr.push(daysOfWeek[i]);
+    }
+
+    return chartWeekArr.reverse();
+  };
+
+  const chartWeekData = () => {
+    const filteredDates = [];
+
+    for (let i = 0; i <= arr.length - 1; i++) {
+      const orderDate = arr[i].orderDate;
+      const currDate = new Date();
+      const currMonth = currDate.getMonth();
+      const date = new Date(orderDate);
+      const dateMonth = date.getMonth();
+
+      if (currMonth >= dateMonth) {
+        if (
+          date.getDate() <= currDate.getDate() &&
+          date.getDate() >= currDate.getDate() - 7
+        ) {
+          filteredDates.push(arr[i]);
+        } else {
+          //console.log('out of the week');
+        }
+      } else {
+        //console.log('date is not good to pass');
+      }
+    }
+
+    const dataArr = [0, 0, 0, 0, 0, 0, 0];
+    let sum = 0;
+
+    for (let i = 0; i <= filteredDates.length - 1; i++) {
+      const orderDate = filteredDates[i].orderDate;
+      const filteredDatesDay = new Date(filteredDates[i].orderDate);
+      const days = orderDate.split('-')[2];
+      const findDays = filteredDates
+        .filter((el, index) => el.orderDate.split('-')[2] === days)
+        .map((el) => el.totalPrice);
+
+      for (let i = 0; i < findDays.length; i++) {
+        sum += findDays[i];
       }
 
-    
-  
+      dataArr[filteredDatesDay.getDay() + 1] = sum;
 
-  //console.log(chartWeekArr)
+      sum = 0;
+    }
+
+    return dataArr;
+  };
 
   const changeChartData = (timeSpan) => {
     if (timeSpan === 'month') {
@@ -213,21 +255,13 @@ export default function DashboardScreen() {
       });
     } else if (timeSpan === 'week') {
       setChartData({
-        labels: [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-        ],
+        labels: chartWeekLabel(),
         datasets: [
           {
             label: 'Sales',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
-            data: [30, 42, 30, 40, 35, 75, 58],
+            data: chartWeekData(),
             fill: true, // Enable the fill option to add the background color under the line
             backgroundColor: (context) => {
               const chart = context.chart;
@@ -304,10 +338,18 @@ export default function DashboardScreen() {
 
         <div className="pe-2 mt-3 mb-3">
           <div className="btn-group shadow">
-            <Button>Day</Button>
+            <Button
+              onClick={() => {
+                changeChartData('day');
+                setChartType('pie');
+              }}
+            >
+              Day
+            </Button>
             <Button
               onClick={() => {
                 changeChartData('week');
+                setChartType('line');
               }}
             >
               Week
@@ -315,13 +357,15 @@ export default function DashboardScreen() {
             <Button
               onClick={() => {
                 changeChartData('month');
+                setChartType('line');
               }}
             >
               Month
             </Button>
+            <Button>Daily Goal</Button>
           </div>
 
-          <LineChart data={chartData} />
+          <LineChart data={chartData} chartType={chartType} />
         </div>
       </Col>
     </Row>
