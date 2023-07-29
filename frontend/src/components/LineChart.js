@@ -22,7 +22,8 @@ ChartJS.register(
   Filler
 );
 
-export default function LineChart() {
+export default function LineChart({ data }) {
+  //console.log(data)
   const options = {
     responsive: true,
     plugins: {
@@ -55,40 +56,10 @@ export default function LineChart() {
     },
   };
 
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: 'Sales',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-        data: [25, 32, 30, 40, 35, 45],
-        fill: true, // Enable the fill option to add the background color under the line
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
-          if (!chartArea) {
-            // This case happens on initial chart load
-            return null;
-          }
-          const gradient = ctx.createLinearGradient(
-            chartArea.left,
-            chartArea.bottom, // The gradient will start from the bottom
-            chartArea.left,
-            chartArea.top // And extend to the top
-          );
-          gradient.addColorStop(1, 'rgba(54, 162, 235, 0.3)');
-          gradient.addColorStop(0, 'rgb(255, 255, 255)');
-          return gradient;
-        },
-      },
-    ],
-  };
-
   return (
-    <div className="line-chart mt-5 d-flex justify-content-center">
-      <div className='w-75'>
-        <Line className=' ' options={options} data={data} />
+    <div className="line-chart ">
+      <div className="">
+        <Line className=" " options={options} data={data} />
       </div>
     </div>
   );
