@@ -2,6 +2,7 @@ import AdminNavbar from '../components/AdminNavbar.js';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import LineChart from '../components/LineChart.js';
 
 export default function DashboardScreen() {
   return (
@@ -53,6 +54,9 @@ export default function DashboardScreen() {
             </div>
           </Col>
         </Row>
+
+        <LineChart />
+        
       </Col>
     </Row>
   );
