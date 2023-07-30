@@ -36,36 +36,19 @@ export default function DashboardScreen() {
   ];
 
   const [chartType, setChartType] = useState('');
+
   const [chartData, setChartData] = useState({
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    labels: ['Earnings', 'Rest Of Goal'],
     datasets: [
       {
         label: 'Sales',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        data: [70, 30],
+        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,
-        data: [25, 32, 30, 40, 35, 45],
-        fill: true, // Enable the fill option to add the background color under the line
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
-          if (!chartArea) {
-            // This case happens on initial chart load
-            return null;
-          }
-          const gradient = ctx.createLinearGradient(
-            chartArea.left,
-            chartArea.bottom, // The gradient will start from the bottom
-            chartArea.left,
-            chartArea.top // And extend to the top
-          );
-          gradient.addColorStop(1, 'rgba(54, 162, 235, 0.3)');
-          gradient.addColorStop(0, 'rgb(255, 255, 255)');
-          return gradient;
-        },
       },
     ],
   });
-
   const { isLoading: isLoadingOrders, data: orderData } = useQuery(
     'orders',
     async () => {
@@ -106,6 +89,9 @@ export default function DashboardScreen() {
       obj = {};
     }
   }
+
+
+  
 
   const currentMonthLabel = () => {
     const dateString = Date.now();
@@ -214,13 +200,43 @@ export default function DashboardScreen() {
         sum += findDays[i];
       }
 
-      dataArr[filteredDatesDay.getDay() + 1] = sum;
+      dataArr[filteredDatesDay.getDay()] = sum;
 
       sum = 0;
     }
 
     return dataArr;
   };
+
+  function getCurrentDate() {
+    const today = new Date();
+  
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+  
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+const doughnutData = () =>{
+  let sum = 0
+  let goal = 350
+
+  const filterTodaySales = arr.filter((el) => el.orderDate === getCurrentDate())
+
+  for (let i = 0; i < filterTodaySales.length; i++) {
+    sum += filterTodaySales[i].totalPrice;
+  }
+
+  const percentage = sum/goal
+
+  const wholePercentage = Math.trunc(percentage * 100);
+
+  const remainder = 100 - wholePercentage
+
+  return [wholePercentage, remainder]
+}
 
   const changeChartData = (timeSpan) => {
     if (timeSpan === 'month') {
@@ -280,6 +296,22 @@ export default function DashboardScreen() {
               gradient.addColorStop(0, 'rgb(255, 255, 255)');
               return gradient;
             },
+          },
+        ],
+      });
+    } else if (timeSpan === 'day') {
+      setChartData({
+        labels: ['Earnings', 'Rest Of Goal'],
+        datasets: [
+          {
+            label: 'Sales',
+            data: doughnutData(),
+            backgroundColor: [
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+            borderWidth: 1,
           },
         ],
       });
@@ -362,7 +394,6 @@ export default function DashboardScreen() {
             >
               Month
             </Button>
-            <Button>Daily Goal</Button>
           </div>
 
           <LineChart data={chartData} chartType={chartType} />

@@ -58,20 +58,8 @@ export default function LineChart({ data, chartType }) {
     },
   };
 
-  const tdata = {
-    labels: ['Earnings', 'Rest Of Goal'],
-    datasets: [
-      {
-        label: 'Sales',
-        data: [70, 30],
-        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-        borderWidth: 1,
-      },
-    ],
-  };
 
-  const toptions = {
+  const doughnutOptions = {
     responsive: true,
     plugins: {
       doughnutCenterText: {
@@ -85,22 +73,7 @@ export default function LineChart({ data, chartType }) {
     },
   };
 
-  const textCenter = {
-    id: 'textCenter',
-    beforeDatasetsDraw(chart, args, pluginOptions) {
-      const { ctx } = chart;
 
-      ctx.save();
-      ctx.font = 'bold 40px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(75, 192, 192)';
-      ctx.fillText(
-        '$365',
-        chart.getDatasetMeta(0).data[0].x,
-        chart.getDatasetMeta(0).data[0].y
-      );
-    },
-  };
 
   return (
     <div className="line-chart ">
@@ -111,9 +84,8 @@ export default function LineChart({ data, chartType }) {
           <div className="d-flex justify-content-center">
             <Doughnut
               className="w-50 h-50 "
-              options={toptions}
-              data={tdata}
-              plugins={[textCenter]}
+              options={doughnutOptions}
+              data={data}
             />
           </div>
         )}
