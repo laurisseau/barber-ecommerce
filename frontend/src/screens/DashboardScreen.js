@@ -4,10 +4,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LineChart from '../components/LineChart.js';
 import Button from 'react-bootstrap/esm/Button.js';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import LoadingBox from '../components/LoadingBox';
 
 export default function DashboardScreen() {
   const months = [
@@ -37,61 +35,87 @@ export default function DashboardScreen() {
 
   const [chartType, setChartType] = useState('');
 
+  const [arr, setArr] = useState([]);
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const orderData = await axios.get('/api/orders/');
+
+      if (orderData) {
+        const result = orderData.data;
+        const newArr = [];
+        for (let i = 0; i <= result.length - 1; i++) {
+          const ordersPaid = orderData.data[i].paidAt;
+          const ordersId = orderData.data[i]._id;
+          const date = ordersPaid.split('T')[0];
+          const totalPrice = orderData.data[i].totalPrice;
+
+          newArr.push({
+            id: ordersId,
+            orderDate: date,
+            totalPrice: totalPrice,
+          });
+        }
+
+        setArr(newArr);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Simulate a click on the button when the component is mounted
+    if (buttonRef.current) {
+      buttonRef.current.click();
+    }
+  }, [arr]);
+
+  function getCurrentDate() {
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  const doughnutData = () => {
+    let sum = 0;
+    let goal = 350;
+
+    const filterTodaySales = arr.filter(
+      (el) => el.orderDate === getCurrentDate()
+    );
+
+    for (let i = 0; i < filterTodaySales.length; i++) {
+      sum += filterTodaySales[i].totalPrice;
+    }
+
+    const percentage = sum / goal;
+
+    const wholePercentage = Math.trunc(percentage * 100);
+
+    const remainder = 100 - wholePercentage;
+
+    return [wholePercentage, remainder];
+  };
+
   const [chartData, setChartData] = useState({
     labels: ['Earnings', 'Rest Of Goal'],
     datasets: [
       {
-        label: 'Sales',
-        data: [70, 30],
+        label: 'Percentage',
+        data: [0, 100],
         backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
         borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,
       },
     ],
   });
-  const { isLoading: isLoadingOrders, data: orderData } = useQuery(
-    'orders',
-    async () => {
-      return await axios.get('/api/orders/');
-    }
-  );
-
-  if (isLoadingOrders) {
-    return (
-      <div className="d-flex justify-content-center mb-5 mt-5">
-        <LoadingBox />
-      </div>
-    );
-  }
-
-  let obj = {};
-  const arr = [];
-
-  if (orderData) {
-    //const result = orderData.data[0].paidAt
-    const result = orderData.data;
-    //const date = result.split('T')[0]
-    //console.log(date)
-    for (let i = 0; i <= result.length - 1; i++) {
-      const ordersPaid = orderData.data[i].paidAt;
-      const ordersId = orderData.data[i]._id;
-      const date = ordersPaid.split('T')[0];
-      const totalPrice = orderData.data[i].totalPrice;
-
-      //console.log(ordersId)
-
-      obj['id'] = ordersId;
-      obj['orderDate'] = date;
-      obj['totalPrice'] = totalPrice;
-
-      arr.push(obj);
-
-      obj = {};
-    }
-  }
-
-
-  
 
   const currentMonthLabel = () => {
     const dateString = Date.now();
@@ -140,8 +164,6 @@ export default function DashboardScreen() {
     return dataArr;
   };
 
-  //console.log(arr);
-
   const chartWeekLabel = () => {
     const date = new Date();
     const chartWeekArr = [];
@@ -162,81 +184,32 @@ export default function DashboardScreen() {
   };
 
   const chartWeekData = () => {
-    const filteredDates = [];
-
-    for (let i = 0; i <= arr.length - 1; i++) {
-      const orderDate = arr[i].orderDate;
+    const filteredDates = arr.filter((item) => {
+      const orderDate = new Date(item.orderDate);
       const currDate = new Date();
-      const currMonth = currDate.getMonth();
-      const date = new Date(orderDate);
-      const dateMonth = date.getMonth();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(currDate.getDate() - 7);
+      return orderDate >= oneWeekAgo && orderDate <= currDate;
+    });
 
-      if (currMonth >= dateMonth) {
-        if (
-          date.getDate() <= currDate.getDate() &&
-          date.getDate() >= currDate.getDate() - 7
-        ) {
-          filteredDates.push(arr[i]);
-        } else {
-          //console.log('out of the week');
-        }
-      } else {
-        //console.log('date is not good to pass');
-      }
+    const labels = chartWeekLabel();
+    const daysObj = {};
+
+    for (let i = 0; i < labels.length; i++) {
+      daysObj[labels[i]] = 0;
     }
 
-    const dataArr = [0, 0, 0, 0, 0, 0, 0];
-    let sum = 0;
+    filteredDates.forEach((order) => {
+      const orderDate = new Date(`${order.orderDate}T12:30:00`);
+      let dayOfWeek = orderDate.getDay();
 
-    for (let i = 0; i <= filteredDates.length - 1; i++) {
-      const orderDate = filteredDates[i].orderDate;
-      const filteredDatesDay = new Date(filteredDates[i].orderDate);
-      const days = orderDate.split('-')[2];
-      const findDays = filteredDates
-        .filter((el, index) => el.orderDate.split('-')[2] === days)
-        .map((el) => el.totalPrice);
+      daysObj[daysOfWeek[dayOfWeek]] += order.totalPrice;
+    });
 
-      for (let i = 0; i < findDays.length; i++) {
-        sum += findDays[i];
-      }
+    const valueArray = Object.values(daysObj);
 
-      dataArr[filteredDatesDay.getDay()] = sum;
-
-      sum = 0;
-    }
-
-    return dataArr;
+    return valueArray;
   };
-
-  function getCurrentDate() {
-    const today = new Date();
-  
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-  
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-
-const doughnutData = () =>{
-  let sum = 0
-  let goal = 350
-
-  const filterTodaySales = arr.filter((el) => el.orderDate === getCurrentDate())
-
-  for (let i = 0; i < filterTodaySales.length; i++) {
-    sum += filterTodaySales[i].totalPrice;
-  }
-
-  const percentage = sum/goal
-
-  const wholePercentage = Math.trunc(percentage * 100);
-
-  const remainder = 100 - wholePercentage
-
-  return [wholePercentage, remainder]
-}
 
   const changeChartData = (timeSpan) => {
     if (timeSpan === 'month') {
@@ -304,7 +277,7 @@ const doughnutData = () =>{
         labels: ['Earnings', 'Rest Of Goal'],
         datasets: [
           {
-            label: 'Sales',
+            label: 'Percentage',
             data: doughnutData(),
             backgroundColor: [
               'rgba(75, 192, 192, 0.2)',
@@ -371,6 +344,7 @@ const doughnutData = () =>{
         <div className="pe-2 mt-3 mb-3">
           <div className="btn-group shadow">
             <Button
+              ref={buttonRef}
               onClick={() => {
                 changeChartData('day');
                 setChartType('pie');

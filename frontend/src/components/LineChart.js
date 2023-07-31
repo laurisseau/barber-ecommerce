@@ -81,12 +81,16 @@ export default function LineChart({ data, chartType }) {
         {chartType === 'line' ? (
           <Line className=" " options={options} data={data} />
         ) : (
-          <div className="d-flex justify-content-center">
+          <div>
+            <div className='mt-4 ms-0'><h3>Goal of $350 today</h3></div>
+          <div className="d-flex justify-content-center ">
+            
             <Doughnut
               className="w-50 h-50 "
               options={doughnutOptions}
               data={data}
             />
+          </div>
           </div>
         )}
       </div>

@@ -57,7 +57,7 @@ export const updateDeliverey = expressAsyncHandler(async (req, res) => {
     if (orderItemToUpdate) {
       if (req.body.status === 'Delivered') {
         orderItemToUpdate.isDelivered = true;
-      } else if(req.body.status === 'Undelivered') {
+      } else if (req.body.status === 'Undelivered') {
         orderItemToUpdate.isDelivered = false;
       }
       await order.save();
@@ -68,4 +68,45 @@ export const updateDeliverey = expressAsyncHandler(async (req, res) => {
   } else {
     res.status(404).send({ message: 'Order not found.' });
   }
+});
+
+export const largetSalesInDay = expressAsyncHandler(async (req, res) => {
+  const orders = await Order.find().select('_id paidAt totalPrice');
+
+  let modifiedPaidAt = {};
+  let newOrders = [];
+
+  for (let i = 0; i < orders.length; i++) {
+    const stringOrder = orders[i].paidAt.toISOString().split('T')[0];
+    modifiedPaidAt['paidAt'] = stringOrder;
+    modifiedPaidAt['totalPrice'] = orders[i].totalPrice;
+    newOrders.push(modifiedPaidAt);
+    modifiedPaidAt = {};
+  }
+
+  const groupAndSumOrders = (data) => {
+    const groupedOrders = {};
+
+    data.forEach((order) => {
+      const { paidAt, totalPrice } = order;
+
+      if (groupedOrders[paidAt]) {
+        groupedOrders[paidAt].totalPrice += totalPrice;
+      } else {
+        groupedOrders[paidAt] = { paidAt, totalPrice };
+      }
+    });
+
+    return Object.values(groupedOrders);
+  };
+
+  const daySales = groupAndSumOrders(newOrders)
+
+  for(let i = 0; i < daySales.length; i++){
+    console.log(i)
+    //console.log(daySales[i])
+  }
+
+
+
 });

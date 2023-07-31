@@ -6,6 +6,7 @@ import {
   getOrder,
   payedOrder,
   myOrder,
+  largetSalesInDay
 } from '../controller/orderController.js';
 
 const orderRouter = express.Router();
@@ -13,6 +14,8 @@ const orderRouter = express.Router();
 orderRouter.post('/payedOrder', isAuth, payedOrder);
 
 orderRouter.get('/', allOrders);//, isAuth //admin
+
+orderRouter.get('/largetSalesInDay', largetSalesInDay);//, isAuth //admin
 
 orderRouter.put('/updateDeliverey', updateDeliverey);//, isAuth //admin
 
