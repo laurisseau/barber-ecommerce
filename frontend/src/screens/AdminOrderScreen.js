@@ -8,8 +8,12 @@ import LoadingBox from '../components/LoadingBox';
 import { OptionModal } from '../components/OptionModal.js';
 import Badge from 'react-bootstrap/Badge';
 import { useQueryClient, useMutation } from 'react-query';
+import { useContext } from 'react';
+import { Store } from '../Store';
 
 export default function AdminOrderScreen() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const tableRows = [
     'Order_Id',
     'Quantity',
@@ -27,6 +31,8 @@ export default function AdminOrderScreen() {
           id: data._id,
           orderItemName: data.orderItems[0].name,
           status: text,
+        },{
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         });
       } catch (err) {
         console.log(err);
@@ -37,6 +43,8 @@ export default function AdminOrderScreen() {
           id: data._id,
           orderItemName: data.orderItems[0].name,
           status: text,
+        },{
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         });
       } catch (err) {
         console.log(err);
@@ -65,7 +73,9 @@ export default function AdminOrderScreen() {
   const { isLoading: isLoadingOrders, data: ordersData } = useQuery(
     'orders',
     async () => {
-      return await axios.get('/api/orders/');
+      return await axios.get('/api/orders/',{
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
     }
   );
 

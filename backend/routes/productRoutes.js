@@ -11,6 +11,7 @@ import {
   getProductSlug,
 } from '../controller/productController.js';
 import Product from '../models/productModel.js';
+import { isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
@@ -25,10 +26,11 @@ productRouter.get('/', getAllProducts);
 
 productRouter.get('/:id', getProductId);
 
-productRouter.delete('/deleteProduct/:id', deleteProductById); //admin
+productRouter.delete('/deleteProduct/:id', isAuth, deleteProductById); //admin
 
 productRouter.put(
   '/updateProduct/:id',
+  isAuth,
   uploadUserPhoto,
   resizeUpdatedUserPhotoWithDB(Product),
   updateProductById

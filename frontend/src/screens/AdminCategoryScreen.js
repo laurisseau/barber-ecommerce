@@ -6,13 +6,16 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
 import Badge from 'react-bootstrap/Badge';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import CenterModal from '../components/CenterModal.js';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
+import { Store } from '../Store';
 //import { useQueryClient, useMutation } from 'react-query';
 
 export default function AdminCategoryScreen() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const tableRows = ['_id', 'image', 'name', 'slug', 'edit'];
   const [modalShow, setModalShow] = useState(false);
   const [id, setId] = useState('');
@@ -77,10 +80,10 @@ export default function AdminCategoryScreen() {
 
       const { data } = await axios.put(
         `/api/categories/updateCategory/${id}`,
-        formData
-        //, {
-        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
-        //}
+        formData,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
       );
 
       const updatedData = categoryData.map((oldData) =>
@@ -105,10 +108,10 @@ export default function AdminCategoryScreen() {
 
       const { data } = await axios.post(
         '/api/categories/createCategory',
-        formData
-        //, {
-        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
-        //}
+        formData,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
       );
 
       setCategoryData([...categoryData, data]);
@@ -122,10 +125,10 @@ export default function AdminCategoryScreen() {
   const deleteCategory = async (id) => {
     try {
       const { data } = await axios.delete(
-        `/api/categories/deleteCategory/${id}`
-        //, {
-        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
-        //}
+        `/api/categories/deleteCategory/${id}`,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
       );
 
       const updatedData = categoryData.filter((el) => el._id !== data._id);

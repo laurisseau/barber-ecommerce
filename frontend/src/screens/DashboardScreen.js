@@ -4,8 +4,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LineChart from '../components/LineChart.js';
 import Button from 'react-bootstrap/esm/Button.js';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { Store } from '../Store';
 import axios from 'axios';
+import ChartModal from '../components/ChartModal.js';
 
 export default function DashboardScreen() {
   const months = [
@@ -33,37 +35,89 @@ export default function DashboardScreen() {
     'Saturday',
   ];
 
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const [modalShow, setModalShow] = useState(false);
   const [chartType, setChartType] = useState('');
-
   const [arr, setArr] = useState([]);
+  const [totalIncome, setTotalIncome] = useState('');
+  const [goal, setGoal] = useState('');
+  const [allOrders, setAllOrders] = useState('');
+  const [allCustomers, setAllCustomers] = useState('');
   const buttonRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const orderData = await axios.get('/api/orders/');
+      try {
+        const orderData = await axios.get('/api/orders/', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
 
-      if (orderData) {
-        const result = orderData.data;
-        const newArr = [];
-        for (let i = 0; i <= result.length - 1; i++) {
-          const ordersPaid = orderData.data[i].paidAt;
-          const ordersId = orderData.data[i]._id;
-          const date = ordersPaid.split('T')[0];
-          const totalPrice = orderData.data[i].totalPrice;
+        if (orderData) {
+          const result = orderData.data;
+          const newArr = [];
+          for (let i = 0; i <= result.length - 1; i++) {
+            const ordersPaid = orderData.data[i].paidAt;
+            const ordersId = orderData.data[i]._id;
+            const date = ordersPaid.split('T')[0];
+            const totalPrice = orderData.data[i].totalPrice;
 
-          newArr.push({
-            id: ordersId,
-            orderDate: date,
-            totalPrice: totalPrice,
-          });
+            newArr.push({
+              id: ordersId,
+              orderDate: date,
+              totalPrice: totalPrice,
+            });
+          }
+
+          setArr(newArr);
         }
-
-        setArr(newArr);
+      } catch (err) {
+        console.log(err);
       }
     };
 
+    const fetchGoal = async () => {
+      try {
+        const adminGoal = await axios.get('/api/orders/largetSalesInDay', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+
+        setGoal(Math.floor(adminGoal.data.goal));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const fetchTotalIncome = async () => {
+      const adminTotalIncome = await axios.get('/api/orders/totalIncome', {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+
+      setTotalIncome(adminTotalIncome.data.totalIncome);
+    };
+
+    const fetchAllOrders = async () => {
+      const adminOrders = await axios.get('/api/orders/', {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+
+      setAllOrders(adminOrders.data.length);
+    };
+
+    const fetchAllCustomers = async () => {
+      const adminCustomers = await axios.get('/api/users/allusers', {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+
+      setAllCustomers(adminCustomers.data.length);
+    };
+
+    fetchGoal();
     fetchData();
-  }, []);
+    fetchAllOrders();
+    fetchTotalIncome();
+    fetchAllCustomers();
+  }, [userInfo.token]);
 
   useEffect(() => {
     // Simulate a click on the button when the component is mounted
@@ -85,7 +139,6 @@ export default function DashboardScreen() {
 
   const doughnutData = () => {
     let sum = 0;
-    let goal = 350;
 
     const filterTodaySales = arr.filter(
       (el) => el.orderDate === getCurrentDate()
@@ -139,9 +192,10 @@ export default function DashboardScreen() {
       lgMonthArr.push(largestMonth);
     }
 
-    const monthDataLength = Math.max(...lgMonthArr);
+    const currentDate = new Date();
+    const currentMonthNum = currentDate.getMonth();
 
-    for (let i = 0; i <= monthDataLength - 1; i++) {
+    for (let i = 0; i <= currentMonthNum; i++) {
       dataArr.push(0);
     }
 
@@ -305,7 +359,7 @@ export default function DashboardScreen() {
               <Card className="shadow p-2 mt-3 w-100 p-3 bg-gradient-cosmic text-white">
                 <div className="font-weight-light">Total Orders</div>
                 <div className="d-flex justify-content-between mt-2">
-                  <h3 className="stat">865</h3>
+                  <h3 className="stat">{allOrders}</h3>
                   <span className=" fs-3 material-symbols-outlined">
                     shopping_cart
                   </span>
@@ -318,7 +372,7 @@ export default function DashboardScreen() {
               <Card className="shadow p-2 mt-3 w-100 p-3 bg-gradient-burning text-white">
                 <div className="font-weight-light">Total Income</div>
                 <div className="d-flex justify-content-between mt-2">
-                  <h3 className="stat">$52,945</h3>
+                  <h3 className="stat">${totalIncome}</h3>
                   <span className=" fs-3 material-symbols-outlined">
                     credit_card
                   </span>
@@ -331,7 +385,7 @@ export default function DashboardScreen() {
               <Card className="shadow p-2 mt-3 w-100 p-3 bg-gradient-Ohhappiness text-white">
                 <div className="font-weight-light">Total Users</div>
                 <div className="d-flex justify-content-between mt-2">
-                  <h3 className="stat">24.5K</h3>
+                  <h3 className="stat">{allCustomers}</h3>
                   <span className=" fs-3 material-symbols-outlined">
                     person
                   </span>
@@ -342,35 +396,79 @@ export default function DashboardScreen() {
         </Row>
 
         <div className="pe-2 mt-3 mb-3">
-          <div className="btn-group shadow">
-            <Button
-              ref={buttonRef}
-              onClick={() => {
-                changeChartData('day');
-                setChartType('pie');
-              }}
-            >
-              Day
-            </Button>
-            <Button
-              onClick={() => {
-                changeChartData('week');
-                setChartType('line');
-              }}
-            >
-              Week
-            </Button>
-            <Button
-              onClick={() => {
-                changeChartData('month');
-                setChartType('line');
-              }}
-            >
-              Month
-            </Button>
+          <div className="lg-button-chart-visibility">
+            <div className="btn-group shadow ">
+              <Button
+                ref={buttonRef}
+                onClick={() => {
+                  changeChartData('day');
+                  setChartType('doughnut');
+                }}
+              >
+                Day
+              </Button>
+              <Button
+                onClick={() => {
+                  changeChartData('week');
+                  setChartType('line');
+                }}
+              >
+                Week
+              </Button>
+              <Button
+                onClick={() => {
+                  changeChartData('month');
+                  setChartType('line');
+                }}
+              >
+                Month
+              </Button>
+            </div>
           </div>
 
-          <LineChart data={chartData} chartType={chartType} />
+          <div className="sm-button-chart-visibility">
+            <div className="btn-group shadow ">
+              <Button
+                onClick={() => {
+                  setModalShow(true);
+                  changeChartData('day');
+                  setChartType('doughnut');
+                }}
+              >
+                Day
+              </Button>
+              <Button
+                onClick={() => {
+                  setModalShow(true);
+                  changeChartData('week');
+                  setChartType('line');
+                }}
+              >
+                Week
+              </Button>
+              <Button
+                onClick={() => {
+                  setModalShow(true);
+                  changeChartData('month');
+                  setChartType('line');
+                }}
+              >
+                Month
+              </Button>
+            </div>
+          </div>
+
+          <div className="chart-visibility">
+            <LineChart data={chartData} chartType={chartType} goal={goal} />
+          </div>
+
+          <ChartModal
+            show={modalShow}
+            data={chartData}
+            charttype={chartType}
+            goal={goal}
+            onHide={() => setModalShow(false)}
+          />
         </div>
       </Col>
     </Row>

@@ -4,12 +4,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { Store } from '../Store';
 import Button from 'react-bootstrap/esm/Button.js';
 import { useQuery } from 'react-query';
 
 export default function AdminAddProductsScreen() {
   const navigate = useNavigate();
+  const { state } = useContext(Store);
+  const { userInfo } = state;
 
   const { data: categoryData } = useQuery('categoryData', async () => {
     return await axios.get('/api/categories/');
@@ -57,9 +60,9 @@ export default function AdminAddProductsScreen() {
       const data = await axios.post(
         '/api/products/createProduct',
         formData
-        //, {
-        // headers: { Authorization: `Bearer ${employeeInfo.token}` },
-        //}
+        , {
+         headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
       );
 
       if (data) {

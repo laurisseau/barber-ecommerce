@@ -32,6 +32,7 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
     });
 
     req.user = await verifier.verify(token);
+
     next();
   }
 });

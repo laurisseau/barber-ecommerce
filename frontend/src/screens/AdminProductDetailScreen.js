@@ -1,13 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/esm/Button';
 import axios from 'axios';
 import AdminNavbar from '../components/AdminNavbar.js';
 import Form from 'react-bootstrap/Form';
+import { Store } from '../Store';
 
 export default function AdminProductDetailScreen() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const navigate = useNavigate();
   const params = useParams();
   const { id } = params;
@@ -92,7 +95,9 @@ export default function AdminProductDetailScreen() {
 
       const { data } = await axios.put(
         `/api/products/updateProduct/${id}`,
-        formData
+        formData,     {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
       );
 
       if (data) {

@@ -6,13 +6,16 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
 import Card from 'react-bootstrap/Card';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Button from 'react-bootstrap/esm/Button.js';
 import { Link } from 'react-router-dom';
 import {OptionModal} from '../components/OptionModal.js';
 import { useQueryClient, useMutation } from 'react-query';
+import { Store } from '../Store';
 
 export default function AdminProductScreen() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const queryClient = useQueryClient();
 
   const deleteProduct = useMutation((data) => deleteHandler(data), {
@@ -42,7 +45,9 @@ export default function AdminProductScreen() {
 
   const deleteHandler = async (id) => {
     try {
-      await axios.delete(`/api/products/deleteProduct/${id}`);
+      await axios.delete(`/api/products/deleteProduct/${id}`,     {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
     } catch (err) {
       console.log(err);
     }

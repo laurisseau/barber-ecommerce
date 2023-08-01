@@ -24,7 +24,7 @@ ChartJS.register(
   Tooltip
 );
 
-export default function LineChart({ data, chartType }) {
+export default function LineChart({ data, chartType, goal }) {
   //console.log(data)
   const options = {
     responsive: true,
@@ -82,7 +82,7 @@ export default function LineChart({ data, chartType }) {
           <Line className=" " options={options} data={data} />
         ) : (
           <div>
-            <div className='mt-4 ms-0'><h3>Goal of $350 today</h3></div>
+            <div className='mt-4 ms-0'><h3>{`Goal of $${goal} today`}</h3></div>
           <div className="d-flex justify-content-center ">
             
             <Doughnut

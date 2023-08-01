@@ -100,13 +100,26 @@ export const largetSalesInDay = expressAsyncHandler(async (req, res) => {
     return Object.values(groupedOrders);
   };
 
-  const daySales = groupAndSumOrders(newOrders)
+  const daySales = groupAndSumOrders(newOrders);
+  const allPricesArr = [];
 
-  for(let i = 0; i < daySales.length; i++){
-    console.log(i)
-    //console.log(daySales[i])
+  for (let i = 0; i < daySales.length; i++) {
+    allPricesArr.push(daySales[i].totalPrice);
   }
 
+  const highestSalesInDay = Math.max(...allPricesArr);
 
+  res.send({ goal: highestSalesInDay });
+});
 
+export const totalIncome = expressAsyncHandler(async (req, res) => {
+  const orders = await Order.find();
+
+  let sum = 0;
+
+  orders.forEach((order) => {
+    sum += order.totalPrice;
+  });
+
+  res.send({ totalIncome: sum.toFixed(2) });
 });

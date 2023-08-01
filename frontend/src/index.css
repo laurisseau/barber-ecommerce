@@ -115,7 +115,6 @@ code {
   border-radius: 5px;
 }
 
-
 .overlay:hover {
   opacity: 1;
 }
@@ -355,4 +354,26 @@ code {
   cursor: pointer;
   background-color: #e9eaea;
   transition: 0.5s;
+}
+
+@media only screen and (max-width: 700px) {
+  .chart-visibility {
+    display: none;
+  }
+  .sm-button-chart-visibility {
+    display: block;
+  }
+  .lg-button-chart-visibility {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  .lg-button-chart-visibility {
+    display: block;
+  }
+
+  .sm-button-chart-visibility {
+    display: none;
+  }
 }

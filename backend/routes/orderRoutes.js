@@ -6,21 +6,24 @@ import {
   getOrder,
   payedOrder,
   myOrder,
-  largetSalesInDay
+  largetSalesInDay,
+  totalIncome,
 } from '../controller/orderController.js';
 
 const orderRouter = express.Router();
 
 orderRouter.post('/payedOrder', isAuth, payedOrder);
 
-orderRouter.get('/', allOrders);//, isAuth //admin
+orderRouter.get('/', isAuth, allOrders); //admin
 
-orderRouter.get('/largetSalesInDay', largetSalesInDay);//, isAuth //admin
+orderRouter.get('/largetSalesInDay', isAuth, largetSalesInDay); // //admin
 
-orderRouter.put('/updateDeliverey', updateDeliverey);//, isAuth //admin
+orderRouter.get('/totalIncome', isAuth, totalIncome); // //admin
 
-orderRouter.get('/mine', isAuth , myOrder);
+orderRouter.put('/updateDeliverey', isAuth, updateDeliverey); // //admin
 
-orderRouter.get('/:id', isAuth ,getOrder);
+orderRouter.get('/mine', isAuth, myOrder);
+
+orderRouter.get('/:id', isAuth, getOrder);
 
 export default orderRouter;

@@ -9,7 +9,7 @@ import {
   updatedEmailVerification,
   forgotPassword,
   resetPassword,
-  allUsers
+  allUsers,
 } from '../controller/userController.js';
 
 const userRouter = express.Router();
@@ -30,7 +30,7 @@ userRouter.patch('/resetPassword/:token', resetPassword);
 
 userRouter.put('/profile', isAuth, updateProfile);
 
-userRouter.get('/allusers',  allUsers);//isAuth,
+userRouter.get('/allusers', isAuth, allUsers); //
 
 // make pop up for auth expire
 

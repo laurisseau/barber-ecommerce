@@ -4,15 +4,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
+import { useContext } from 'react';
 
 export default function AdminCustomerScreen(props) {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const tableRows = ['sub', 'preferred_username', 'email', 'role'];
 
   const { isLoading: isLoadingCustomers, data: customersData } = useQuery(
     'customers',
     async () => {
-      return await axios.get('/api/users/allusers');
+      return await axios.get('/api/users/allusers', {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
     }
   );
 

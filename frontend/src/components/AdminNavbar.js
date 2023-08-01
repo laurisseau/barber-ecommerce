@@ -1,7 +1,19 @@
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from 'react-router-dom';
+import { Store } from '../Store';
+import { useContext } from 'react';
 
 export default function AdminNavbar() {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
+  const signoutHandler = () => {
+    ctxDispatch({ type: 'USER_SIGNOUT' });
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMetod');
+    window.location.href = '/signin';
+  };
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -85,15 +97,19 @@ export default function AdminNavbar() {
                   <span className="material-symbols-outlined fs-4 me-2">
                     account_circle
                   </span>
-                  <span className="d-none d-sm-inline">user</span>
+                  <span className="d-none d-sm-inline">
+                    {userInfo.preferred_username}
+                  </span>
                 </div>
               </div>
             }
             id="basic-nav-dropdown"
             className="dropup text-decoration-none text-white p-3 fs-5"
           >
-            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-            <NavDropdown.Item>Signout</NavDropdown.Item>
+            <NavDropdown.Item href="/dashboard/profile">Profile</NavDropdown.Item>
+            <NavDropdown.Item onClick={signoutHandler}>
+              Signout
+            </NavDropdown.Item>
           </NavDropdown>
         </div>
       </div>
