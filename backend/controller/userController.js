@@ -62,7 +62,7 @@ export const signup = expressAsyncHandler(async (req, res) => {
   attributeList.push(attributeLink);
   attributeList.push(attributeRole);
   attributeList.push(attributeWebsite);
-
+//
   userPool.signUp(
     req.body.email,
     req.body.password,
